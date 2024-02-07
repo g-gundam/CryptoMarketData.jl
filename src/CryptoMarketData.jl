@@ -34,6 +34,7 @@ export earliest_candle
 export get_candles_for_day
 
 # functions with exchange-specific methods
+export ts2datetime_fn
 export candle_datetime
 export short_name
 export candles_max
@@ -171,7 +172,7 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
     res = missing
     for cf in cfs
         csv = CSV.read(cf, DataFrame; types=Dict(:ts => UInt64))
-        csv[!, :ts] = map(DateTime ∘ unixmillis2nanodate, csv[!, :ts])
+        csv[!, :ts] = map(ts2datetime_fn(exchange), csv[!, :ts])
         if ismissing(res)
             res = csv
         else

@@ -14,6 +14,12 @@ struct PancakeSwapCandle <: AbstractCandle
     c::Float64
     v::Float64
 end
+# TODO - PancakeSwap has more columns.
+# I don't personally plan to use them, but I don't want to throw them away either.
+
+function ts2datetime_fn(pancakeswap::PancakeSwap)
+    DateTime ∘ unixmillis2nanodate
+end
 
 function candle_datetime(c::PancakeSwapCandle)
   unixmillis2nanodate(c.ts)
