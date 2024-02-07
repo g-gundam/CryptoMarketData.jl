@@ -23,7 +23,7 @@ include("helpers.jl")
 include("exchanges/binance.jl")            # TODO
 include("exchanges/bitget.jl")             # TODO
 include("exchanges/bitmex.jl")             # TODO
-include("exchanges/bitstamp.jl")           # TODO
+include("exchanges/bitstamp.jl")           # DONE
 include("exchanges/bybit.jl")              # TODO
 include("exchanges/pancakeswap.jl")        # DONE
 
