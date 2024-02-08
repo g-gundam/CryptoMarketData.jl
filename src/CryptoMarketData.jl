@@ -21,7 +21,7 @@ include("helpers.jl")
 
 # exported exchange-specific structures and methods
 include("exchanges/binance.jl")            # TODO
-include("exchanges/bitget.jl")             # TODO
+include("exchanges/bitget.jl")             # DONE
 include("exchanges/bitmex.jl")             # TODO
 include("exchanges/bitstamp.jl")           # DONE
 include("exchanges/bybit.jl")              # TODO

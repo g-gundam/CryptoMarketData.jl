@@ -32,3 +32,8 @@ function _d2i(d::Date, cfs)
         missing
     end
 end
+
+function get_tz_offset(n=now(localzone()))
+    secs = (n.zone.offset.std + n.zone.offset.dst)
+    secs.value * -1000
+end

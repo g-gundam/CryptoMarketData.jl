@@ -54,7 +54,7 @@ function get_markets(bitget::Bitget; type="dmcbl")
     return map(m -> m[:symbol], json[:data])
 end
 
-function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Integer=10, tz_offset=(8 * 60 * 60 * 1000))
+function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Integer=10, tz_offset=get_tz_offset())
     symbol = market
     interval = if tf == "1d"
         "1D"
