@@ -63,19 +63,23 @@ function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Intege
     else
         "1m"
     end
+
+    # Add 1 minute to end time, because their API doesn't include the last minute otherwise.
+    # Not sure if the 1D interval also needs an adjustment.
     adjustment = if interval == "1m"
         Minute(1)
     else
         Minute(0)
     end
+
     q = OrderedDict(
-        "kLineStep" => interval,
-        "kLineType" => 1,
+        "symbolId"     => symbol,
+        "kLineStep"    => interval,
+        "kLineType"    => 1,
         "languageType" => 0,
-        "startTime" => nanodate2unixmillis(NanoDate(start)),
-        "endTime" => nanodate2unixmillis(NanoDate(stop) + adjustment),
-        "limit" => limit,
-        "symbolId" => symbol
+        "startTime"    => nanodate2unixmillis(NanoDate(start)),
+        "endTime"      => nanodate2unixmillis(NanoDate(stop) + adjustment),
+        "limit"        => limit
     )
     # @info "get_candles" start q["startTime"] stop q["endTime"] limit
     ohlc_url = bitget.home_url * "/v1/kline/getMoreKlineData"
@@ -84,12 +88,16 @@ function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Intege
     body = JSON3.write(q)
     res = HTTP.post(uri, headers, body; bitget.http_options...)
     json = JSON3.read(res.body)
-    effective_offset = if interval == "1D" # complete bullshit to work around bitget's timezone guessing
+
+    # I don't know how, but bitget seems to be able to infer my local timezone
+    # even though I'm behind a proxy.  What is going on?
+    effective_offset = if interval == "1D"
         tz_offset
     else
         0
     end
-    map(json.data) do c
+
+    candles = map(json.data) do c
         BitgetCandle(
             pui64(c[1]) + effective_offset,
             pf64(c[2]),
@@ -99,6 +107,16 @@ function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Intege
             pf64(c[6]),
             pf64(c[7])
         )
+    end
+
+    real_start = findfirst(candles) do c
+        c.ts == q["startTime"]
+    end
+
+    if real_start > 0
+        return candles[real_start:end]
+    else
+        return candles
     end
 end
 
