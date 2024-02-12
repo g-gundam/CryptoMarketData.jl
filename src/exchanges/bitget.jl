@@ -81,7 +81,7 @@ function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Intege
         "endTime"      => nanodate2unixmillis(NanoDate(stop) + adjustment),
         "limit"        => limit
     )
-    # @info "get_candles" start q["startTime"] stop q["endTime"] limit
+    #@info "get_candles" start q["startTime"] stop q["endTime"] limit
     ohlc_url = bitget.home_url * "/v1/kline/getMoreKlineData"
     uri = URI(ohlc_url)
     headers = ["Content-Type" => "application/json"]
@@ -113,7 +113,10 @@ function get_candles(bitget::Bitget, market; start, stop, tf="1m", limit::Intege
         c.ts == q["startTime"]
     end
 
-    if real_start > 0
+    #@info "cdl" real_start length(candles) candle_datetime(candles[1])
+    if isnothing(real_start)
+        return []
+    elseif real_start > 0
         return candles[real_start:end]
     else
         return candles
