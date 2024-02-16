@@ -101,7 +101,7 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     candles = missing
     # grab as many (large timeframe like 1d) candles as is allowed and
     while true
-        candles = get_candles(exchange, market; tf="1d", start=start, stop=stop, limit=max)
+        candles = get_candles(exchange, market; tf=Day(1), start=start, stop=stop, limit=max)
         length(candles) == max || break
 
         stop = start
@@ -115,14 +115,14 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     # there are 1440 minutes in a day.
     # grab 720 candles
     # XXX :: hopefully candles_max(exchange) > 720
-    candles = get_candles(exchange, market; tf="1m", start=half_way, stop=end_of_day, limit=720)
+    candles = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day, limit=720)
     # if less than 720 returned, we've found the earliest candle
     if length(candles) < 720
         return candles[1]
     else
         # if not
         # grab 720 more candles
-        candles = get_candles(exchange, market; tf="1m", start=first_day, stop=half_way, limit=720)
+        candles = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way, limit=720)
         return candles[1]
     end
     # it better be less than 720 returned and earliest candle found

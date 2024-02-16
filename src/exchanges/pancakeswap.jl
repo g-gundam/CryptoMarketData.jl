@@ -41,11 +41,11 @@ function get_markets(pancakeswap::PancakeSwap)
     return map(m -> m[:symbol], json[:symbols])
 end
 
-function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf="1m", limit::Integer=10)
+function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1), limit::Integer=10)
     symbol = replace(market, r"\W" => s"") |> lowercase
-    interval = if tf == "1d"
+    interval = if tf == Day(1)
         "1d"
-    elseif tf == "1m"
+    elseif tf == Minute(1)
         "1m"
     else
         "1m"

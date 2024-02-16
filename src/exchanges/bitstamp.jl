@@ -38,12 +38,12 @@ function get_markets(bitstamp::Bitstamp)
     return map(r -> r.pair, json)
 end
 
-function get_candles(bitstamp::Bitstamp, market; start, stop, tf="1m", limit::Integer=10)
+function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limit::Integer=10)
     mark2 = replace(market, r"\W" => s"") |> lowercase
     # I only support two timeframes.  1d and 1m
-    step = if tf == "1d"
+    step = if tf == Day(1)
         60 * 60 * 24
-    elseif tf == "1m"
+    elseif tf == Minute(1)
         60
     else
         60
