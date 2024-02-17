@@ -34,7 +34,7 @@ function short_name(bitget::Bitget)
     "bitget"
 end
 
-function candles_max(bitget::Bitget)
+function candles_max(bitget::Bitget; tf=Minute(1))
     1000
 end
 
@@ -49,7 +49,7 @@ function get_markets(bitget::Bitget; type="dmcbl")
         "productType" => type
     )
     uri = URI(info_url; query=q)
-    res = HTTP.get(uri)
+    res = HTTP.get(uri; bitget.http_options...)
     json = JSON3.read(res.body)
     return map(m -> m[:symbol], json[:data])
 end

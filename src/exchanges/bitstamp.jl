@@ -27,7 +27,7 @@ function short_name(bitstamp::Bitstamp)
     "bitstamp"
 end
 
-function candles_max(bitstamp::Bitstamp)
+function candles_max(bitstamp::Bitstamp; tf=Minute(1))
     1000
 end
 

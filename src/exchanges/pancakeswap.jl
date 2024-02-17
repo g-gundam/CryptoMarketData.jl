@@ -29,7 +29,7 @@ function short_name(pancakeswap::PancakeSwap)
     "pancakeswap"
 end
 
-function candles_max(pancakeswap::PancakeSwap)
+function candles_max(pancakeswap::PancakeSwap; tf=Minute(1))
     1500
 end
 

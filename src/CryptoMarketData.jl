@@ -42,9 +42,16 @@ export get_markets
 export get_candles
 
 """
-    save!(exchange, market)
+    save!(exchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
 
 Download 1m candles from the given exchange and market, and save them locally.
+
+# Example
+
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> save!(bitstamp, "BTC/USD", endday=Date("2020-08-16"))
+```
 """
 function save!(exchange::AbstractExchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
     # make directories if they don't already exist
@@ -96,7 +103,7 @@ Return the earliest candle for the given market in the 1m timeframe.
 function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC"))
     # starting from the current day
     stop = DateTime(endday)
-    max = candles_max(exchange)
+    max = candles_max(exchange; tf=Day(1))
     start = stop - Dates.Day(max)
     candles = missing
     # grab as many (large timeframe like 1d) candles as is allowed and
@@ -136,7 +143,7 @@ Fetch all of the 1m candles for the given exchange, market, and day.
 The vector and candles returned is just the right size to save to the archives.
 """
 function get_candles_for_day(exchange::AbstractExchange, market, day::Date)
-    limit = candles_max(exchange)
+    limit = candles_max(exchange)    # tf exists to get around a special case for binance
     n_reqs = convert(Int64, ceil(1440 / limit)) # number of requests
     l_preq = convert(Int64, 1440 / n_reqs)      # limit per request
     candles = []
