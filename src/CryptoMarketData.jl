@@ -20,7 +20,7 @@ abstract type AbstractCandle end
 include("helpers.jl")
 
 # exported exchange-specific structures and methods
-include("exchanges/binance.jl")            # TODO
+include("exchanges/binance.jl")            # DONE
 include("exchanges/bitget.jl")             # DONE
 include("exchanges/bitmex.jl")             # TODO
 include("exchanges/bitstamp.jl")           # DONE
