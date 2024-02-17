@@ -108,12 +108,14 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     candles = missing
     # grab as many (large timeframe like 1d) candles as is allowed and
     while true
+        @info "ec" start stop
         candles = get_candles(exchange, market; tf=Day(1), start=start, stop=stop, limit=max)
         length(candles) == max || break
 
         stop = start
         start = stop - Dates.Day(max)
     end
+    @info "after 1d"
     # work backwards until a result with fewer items than the limit is reached.
     # go to the earliest day
     first_day = floor(candle_datetime(candles[1]), Dates.Day)
@@ -122,22 +124,32 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     # there are 1440 minutes in a day.
     # grab 720 candles
     # XXX :: hopefully candles_max(exchange) > 720
-    candles = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day, limit=720)
+    @info "1m" first_day (:start => half_way) (:stop => end_of_day)
+    candles2 = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day-Minute(1), limit=720)
+    # start at later half of the day
     # if less than 720 returned, we've found the earliest candle
-    if length(candles) < 720
-        return candles[1]
+    if length(candles2) < 720
+        @info "< 720" length(candles2)
+        return candles2[1]
     else
-        # if not
+        # if not, go to earlier half of the day
         # grab 720 more candles
-        candles = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way, limit=720)
-        return candles[1]
+        @info ">= 720" first_day half_way
+        candles3 = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way-Minute(1), limit=720)
+        if length(candles3) == 0
+            @info "length(candles3) == 0"
+            return candles2[1]
+        else
+            @info "ok" length(candles3) length(candles2)
+            return candles3[1]
+        end
     end
     # it better be less than 720 returned and earliest candle found
     # if not? there's a bug.
 end
 
 """
-    get_candles_for_day(exchange, market, day)
+    get_candles_for_day(exchange, market, day::Date)
 
 Fetch all of the 1m candles for the given exchange, market, and day.
 The vector and candles returned is just the right size to save to the archives.
@@ -150,7 +162,9 @@ function get_candles_for_day(exchange::AbstractExchange, market, day::Date)
     current_ts = DateTime(day)
     stop_ts = current_ts + Dates.Minute(l_preq - 1)
     for _ in 1:n_reqs
+        @info "gcfd" current_ts, stop_ts
         c = get_candles(exchange, market; start=current_ts, stop=stop_ts, limit=l_preq)
+        @info length(c)
         append!(candles, c)
         current_ts = stop_ts + Dates.Minute(1)
         stop_ts = current_ts + Dates.Minute(l_preq - 1)
