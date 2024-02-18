@@ -10,6 +10,7 @@ struct Bitmex <: AbstractExchange
     function Bitmex(http_options::Dict)
         new("https://www.bitmex.com/api/v1", http_options)
     end
+    # TODO - support testnet
 end
 
 struct BitmexCandle <: AbstractCandle
@@ -60,6 +61,7 @@ function candle_datetime(c::BitmexCandle)
     NanoDate(c.ts) - Minute(1)
 end
 
+# TODO - support testnet
 function short_name(bitmex::Bitmex)
     "bitmex"
 end
