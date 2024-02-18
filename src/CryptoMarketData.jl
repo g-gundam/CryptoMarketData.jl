@@ -108,7 +108,7 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     candles = missing
     # grab as many (large timeframe like 1d) candles as is allowed and
     while true
-        @info "ec" start stop
+        #@info "ec" start stop
         candles = get_candles(exchange, market; tf=Day(1), start=start, stop=stop, limit=max)
         length(candles) == max || break
 
