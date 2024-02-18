@@ -15,10 +15,10 @@ end
 struct BitmexCandle <: AbstractCandle
     ts::String
     symbol::String
-    o::Union{Float64,Missing}
-    h::Union{Float64,Missing}
-    l::Union{Float64,Missing}
-    c::Union{Float64,Missing}
+    open::Union{Float64,Missing}
+    high::Union{Float64,Missing}
+    low::Union{Float64,Missing}
+    close::Union{Float64,Missing}
     trades::Integer
     v::Union{Float64,Missing}
     vwap::Union{Float64,Missing}
@@ -29,8 +29,14 @@ struct BitmexCandle <: AbstractCandle
 end
 
 function Base.getproperty(c::BitmexCandle, s::Symbol)
-    if s == :open
-        return getfield(c, :o)
+    if s == :o
+        return getfield(c, :open)
+    elseif s == :h
+        return getfield(c, :high)
+    elseif s == :l
+        return getfield(c, :low)
+    elseif s == :c
+        return getfield(c, :close)
     else
         return getfield(c, s)
     end
