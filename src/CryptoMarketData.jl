@@ -32,6 +32,7 @@ export save!
 export load
 export earliest_candle
 export get_candles_for_day
+export save_day!
 
 # functions with exchange-specific methods
 export ts2datetime_fn
@@ -84,9 +85,10 @@ function save!(exchange::AbstractExchange, market; datadir="./data", endday=toda
 end
 
 """
-    save_day(exchange, market, candles)
+    save_day!(exchange, market, candles; datadir="./data")
 
-Save a day worth of 1m candles for the given exchange and market.
+Save a day worth of 1m candles the caller provides for the
+given exchange and market.
 """
 function save_day!(exchange::AbstractExchange, market, candles; datadir="./data")
     current_day = Date(candle_datetime(candles[1]))
