@@ -28,6 +28,14 @@ struct BitmexCandle <: AbstractCandle
     foreignNotional::Float64
 end
 
+function Base.getproperty(c::BitmexCandle, s::Symbol)
+    if s == :open
+        return getfield(c, :o)
+    else
+        return getfield(c, s)
+    end
+end
+
 # https://www.bitmex.com/api/explorer/#!/Trade/Trade_getBucketed
 # Timestamps returned by our bucketed endpoints are the end of the period,
 # indicating when the bucket was written to disk. Some other common systems use
