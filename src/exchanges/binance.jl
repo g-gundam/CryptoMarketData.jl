@@ -10,6 +10,14 @@ struct Binance <: AbstractExchange
     function Binance(http_options::Dict)
         new("https://dapi.binance.com", http_options)
     end
+
+    function Binance(base_url::String)
+        new(base_url, Dict())
+    end
+
+    function Binance(base_url::String, http_options::Dict)
+        new(base_url, http_options)
+    end
 end
 
 struct BinanceCandle <: AbstractCandle
@@ -32,7 +40,7 @@ function ts2datetime_fn(binance::Binance)
 end
 
 function candle_datetime(c::BinanceCandle)
-  unixmillis2nanodate(c.ts)
+    unixmillis2nanodate(c.ts)
 end
 
 function short_name(binance::Binance)
