@@ -1,8 +1,9 @@
 struct PancakeSwap <: AbstractExchange
     base_url::String
+    http_options::Dict
 
     function PancakeSwap()
-        new("https://perp.pancakeswap.finance/fapi/v1")
+        new("https://perp.pancakeswap.finance", Dict())
     end
 end
 
@@ -22,7 +23,7 @@ function ts2datetime_fn(pancakeswap::PancakeSwap)
 end
 
 function candle_datetime(c::PancakeSwapCandle)
-  unixmillis2nanodate(c.ts)
+    unixmillis2nanodate(c.ts)
 end
 
 function short_name(pancakeswap::PancakeSwap)
@@ -34,9 +35,9 @@ function candles_max(pancakeswap::PancakeSwap; tf=Minute(1))
 end
 
 function get_markets(pancakeswap::PancakeSwap)
-    info_url = pancakeswap.base_url * "/exchangeInfo"
+    info_url = pancakeswap.base_url * "/fapi/v1/exchangeInfo"
     uri = URI(info_url)
-    res = HTTP.get(uri)
+    res = HTTP.get(uri; pancakeswap.http_options...)
     json = JSON3.read(res.body)
     return map(m -> m[:symbol], json[:symbols])
 end
@@ -58,9 +59,9 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
         "limit"        => limit,
         "symbol"       => symbol
     )
-    ohlc_url = pancakeswap.base_url * "/markPriceKlines"
+    ohlc_url = pancakeswap.base_url * "/fapi/v1/markPriceKlines"
     uri = URI(ohlc_url, query=q)
-    res = HTTP.get(uri)
+    res = HTTP.get(uri; pancakeswap.http_options...)
     json = JSON3.read(res.body)
     map(json) do c
         PancakeSwapCandle(
