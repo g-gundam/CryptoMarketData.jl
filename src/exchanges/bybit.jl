@@ -1,28 +1,29 @@
-const BYBIT_API         = "https://api.bybit.com"
+const BYBIT_API = "https://api.bybit.com"
 const BYBIT_TESTNET_API = "https://api-testnet.bybit.com"
 
 struct Bybit <: AbstractExchange
     base_url::String
-    using NanoDates: NanoDate0
     http_options::Dict
+    category::String
 
-    function Bybit()
-        new(BYBIT_API, Dict())
+    function Bybit(;category="inverse")
+        new(BYBIT_API, Dict(), category)
     end
 
-    function Bybit(http_options::Dict)
-        new(BYBIT_API, http_options)
+    function Bybit(http_options::Dict; category="inverse")
+        new(BYBIT_API, http_options, category)
     end
 end
 
 struct BybitCandle <: AbstractCandle
+    # Their API returns candles in a JSON array, so I picked the field names to suit me.
     ts::UInt64
-    o::Union{Float64,Missing}
-    h::Union{Float64,Missing}
-    l::Union{Float64,Missing}
-    c::Union{Float64,Missing}
-    v::Union{Float64,Missing}
-    v2::Union{Float64,Missing}
+    o::Float64
+    h::Float64
+    l::Float64
+    c::Float64
+    v::Float64
+    v2::Float64
 end
 
 function ts2datetime_fn(bybit::Bybit)
@@ -34,12 +35,19 @@ function candle_datetime(c::BybitCandle)
 end
 
 function short_name(bybit::Bybit)
-    if bybit.base_url == BYBIT_API
-        "bybit"
+    # symbol name collision is possible so candles of different categories
+    # are stored in separate directories.
+    network = if bybit.base_url == BYBIT_API
+        ""
     elseif bybit.base_url == BYBIT_TESTNET_API
-        "bybit-testnet"
+        "testnet"
     else
-        "bybit-unknown"
+        "unknown"
+    end
+    if network == ""
+        return "bybit-$(bybit.category)"
+    else
+        return "bybit-$(bybit.category)-$(network)"
     end
 end
 
@@ -48,16 +56,16 @@ function candles_max(bybit::Bybit; tf=Minute(1))
 end
 
 # valid categories: linear, inverse, option, spot
-function get_markets(bybit::Bybit; category="inverse")
+function get_markets(bybit::Bybit)
     url = bybit.base_url * "/v5/market/instruments-info"
-    q = OrderedDict("category" => category)
+    q = OrderedDict("category" => bybit.category)
     uri = URI(url; query=q)
     res = HTTP.get(uri; bybit.http_options...)
     json = JSON3.read(res.body)
     return map(m -> m[:symbol], json[:result][:list])
 end
 
-function get_candles(bybit::Bybit, market; start, stop, tf=Minute(1), limit::Integer=10, category="inverse")
+function get_candles(bybit::Bybit, market; start, stop, tf=Minute(1), limit::Integer=10)
     interval = if tf == Day(1)
         "D"
     elseif tf == Minute(1)
@@ -66,7 +74,7 @@ function get_candles(bybit::Bybit, market; start, stop, tf=Minute(1), limit::Int
         "1"
     end
     q = OrderedDict(
-        "category" => category,
+        "category" => bybit.category,
         "symbol"   => market,
         "interval" => interval,
         "start"    => nanodate2unixmillis(NanoDate(start)),
