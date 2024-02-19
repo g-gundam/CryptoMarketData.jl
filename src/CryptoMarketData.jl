@@ -24,7 +24,7 @@ include("exchanges/binance.jl")            # DONE
 include("exchanges/bitget.jl")             # DONE
 include("exchanges/bitmex.jl")             # DONE
 include("exchanges/bitstamp.jl")           # DONE
-include("exchanges/bybit.jl")              # TODO
+include("exchanges/bybit.jl")              # DONE
 include("exchanges/pancakeswap.jl")        # DONE
 
 # general functions that operate on exchanges
