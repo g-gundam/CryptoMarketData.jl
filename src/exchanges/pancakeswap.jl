@@ -14,9 +14,13 @@ struct PancakeSwapCandle <: AbstractCandle
     l::Float64
     c::Float64
     v::Float64
+    close_ts::UInt64
+    v2::Float64
+    trades::UInt64
+    tbv::Float64
+    tbv2::Float64
+    ignore::Float64
 end
-# TODO - PancakeSwap has more columns.
-# I don't personally plan to use them, but I don't want to throw them away either.
 
 function ts2datetime_fn(pancakeswap::PancakeSwap)
     DateTime ∘ unixmillis2nanodate
@@ -52,12 +56,12 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
         "1m"
     end
     q = OrderedDict(
-        "interval"     => interval,
+        "interval" => interval,
         "contractType" => "PERPETUAL",
-        "startTime"    => nanodate2unixmillis(NanoDate(start)),
-        "endTime"      => nanodate2unixmillis(NanoDate(stop)),
-        "limit"        => limit,
-        "symbol"       => symbol
+        "startTime" => nanodate2unixmillis(NanoDate(start)),
+        "endTime" => nanodate2unixmillis(NanoDate(stop)),
+        "limit" => limit,
+        "symbol" => symbol
     )
     ohlc_url = pancakeswap.base_url * "/fapi/v1/markPriceKlines"
     uri = URI(ohlc_url, query=q)
@@ -70,7 +74,13 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
             pf64(c[3]),
             pf64(c[4]),
             pf64(c[5]),
-            pf64(c[6])
+            pf64(c[6]),
+            c[7] % UInt64,
+            pf64(c[8]),
+            c[9] % UInt64,
+            pf64(c[10]),
+            pf64(c[11]),
+            pf64(c[12])
         )
     end
 end
