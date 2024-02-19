@@ -7,14 +7,31 @@ struct Bitstamp <: AbstractExchange
 end
 
 struct BitstampCandle <: AbstractCandle
-    ts::UInt64
-    o::Union{Float64,Missing}
-    h::Union{Float64,Missing}
-    l::Union{Float64,Missing}
-    c::Union{Float64,Missing}
-    v::Union{Float64,Missing}
+    timestamp::UInt64
+    open::Union{Float64,Missing}
+    high::Union{Float64,Missing}
+    low::Union{Float64,Missing}
+    close::Union{Float64,Missing}
+    volume::Union{Float64,Missing}
 end
 
+function Base.getproperty(c::BitstampCandle, s::Symbol)
+    if s == :ts
+        return getfield(c, :timestamp)
+    elseif s == :o
+        return getfield(c, :open)
+    elseif s == :h
+        return getfield(c, :high)
+    elseif s == :l
+        return getfield(c, :low)
+    elseif s == :c
+        return getfield(c, :close)
+    elseif s == :v
+        return getfield(c, :volume)
+    else
+        return getfield(c, s)
+    end
+end
 function ts2datetime_fn(bitstamp::Bitstamp)
     DateTime ∘ unixseconds2nanodate
 end
