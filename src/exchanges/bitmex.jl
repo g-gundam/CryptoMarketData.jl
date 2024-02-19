@@ -4,13 +4,16 @@ struct Bitmex <: AbstractExchange
     http_options::Dict
 
     function Bitmex()
-        new("https://www.bitmex.com/api/v1", Dict())
+        new("https://www.bitmex.com", Dict())
     end
 
     function Bitmex(http_options::Dict)
-        new("https://www.bitmex.com/api/v1", http_options)
+        new("https://www.bitmex.com", http_options)
     end
     # TODO - support testnet
+    # TODO - implement optional authentication to get improved rate limits
+    #        https://www.bitmex.com/app/apiKeysUsage
+    #        https://www.bitmex.com/app/restAPI#Limits
 end
 
 struct BitmexCandle <: AbstractCandle
@@ -71,7 +74,7 @@ function candles_max(bitmex::Bitmex; tf=Minute(1))
 end
 
 function get_markets(bitmex::Bitmex)
-    url = bitmex.base_url * "/instrument/active"
+    url = bitmex.base_url * "/api/v1/instrument/active"
     uri = URI(url)
     res = HTTP.get(uri; bitmex.http_options...)
     json = JSON3.read(res.body)
@@ -79,7 +82,6 @@ function get_markets(bitmex::Bitmex)
 end
 
 function get_candles(bitmex::Bitmex, market; start, stop, tf=Minute(1), limit::Integer=10)
-    symbol = market
     interval = if tf == Day(1)
         "1d"
     elseif tf == Minute(1)
@@ -93,13 +95,13 @@ function get_candles(bitmex::Bitmex, market; start, stop, tf=Minute(1), limit::I
         Minute(0)
     end
     q = OrderedDict(
-        "symbol"    => symbol,
+        "symbol"    => market,
         "binSize"   => interval,
         "startTime" => format(NanoDate(start) + adjustment),
         "endTime"   => format(NanoDate(stop) + adjustment),
         "count"     => limit
     )
-    ohlc_url = bitmex.base_url * "/trade/bucketed"
+    ohlc_url = bitmex.base_url * "/api/v1/trade/bucketed"
     uri = URI(ohlc_url; query=q)
     headers = ["Content-Type" => "application/json"]
     res = HTTP.get(uri, headers; bitmex.http_options...)
