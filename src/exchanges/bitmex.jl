@@ -1,6 +1,8 @@
+const BITMEX_API = "https://www.bitmex.com"
+const BITMEX_TESTNET_API = "https://testnet.bitmex.com"
+
 struct Bitmex <: AbstractExchange
     base_url::String
-    using NanoDates: NanoDate0
     http_options::Dict
 
     function Bitmex()
@@ -10,21 +12,28 @@ struct Bitmex <: AbstractExchange
     function Bitmex(http_options::Dict)
         new("https://www.bitmex.com", http_options)
     end
-    # TODO - support testnet
+
+    function Bitmex(base_url::String)
+        new(base_url, Dict())
+    end
+
+    function Bitmex(base_url::String, http_options::Dict)
+        new(base_url, http_options)
+    end
     # TODO - implement optional authentication to get improved rate limits
     #        https://www.bitmex.com/app/apiKeysUsage
     #        https://www.bitmex.com/app/restAPI#Limits
 end
 
 struct BitmexCandle <: AbstractCandle
-    ts::String
+    timestamp::String
     symbol::String
     open::Union{Float64,Missing}
     high::Union{Float64,Missing}
     low::Union{Float64,Missing}
     close::Union{Float64,Missing}
     trades::Integer
-    v::Union{Float64,Missing}
+    volume::Union{Float64,Missing}
     vwap::Union{Float64,Missing}
     lastSize::Union{Integer,Missing}
     turnover::Integer
@@ -33,7 +42,9 @@ struct BitmexCandle <: AbstractCandle
 end
 
 function Base.getproperty(c::BitmexCandle, s::Symbol)
-    if s == :o
+    if s == :ts
+        return getfield(c, :timestamp)
+    elseif s == :o
         return getfield(c, :open)
     elseif s == :h
         return getfield(c, :high)
@@ -41,6 +52,8 @@ function Base.getproperty(c::BitmexCandle, s::Symbol)
         return getfield(c, :low)
     elseif s == :c
         return getfield(c, :close)
+    elseif s == :v
+        return getfield(c, :volume)
     else
         return getfield(c, s)
     end
@@ -64,9 +77,14 @@ function candle_datetime(c::BitmexCandle)
     NanoDate(c.ts) - Minute(1)
 end
 
-# TODO - support testnet
 function short_name(bitmex::Bitmex)
-    "bitmex"
+    if bitmex.base_url == BITMEX_API
+        "bitmex"
+    elseif bitmex.base_url == BITMEX_TESTNET_API
+        "bitmex-testnet"
+    else
+        "bitmex-unknown"
+    end
 end
 
 function candles_max(bitmex::Bitmex; tf=Minute(1))
