@@ -110,14 +110,14 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     candles = missing
     # grab as many (large timeframe like 1d) candles as is allowed and
     while true
-        #@info "ec" start stop
+        @debug "ec" start stop
         candles = get_candles(exchange, market; tf=Day(1), start=start, stop=stop, limit=max)
         length(candles) == max || break
 
         stop = start
         start = stop - Dates.Day(max)
     end
-    #@info "after 1d"
+    @debug "after 1d"
     # work backwards until a result with fewer items than the limit is reached.
     # go to the earliest day
     first_day = floor(candle_datetime(candles[1]), Dates.Day)
@@ -126,23 +126,23 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     # there are 1440 minutes in a day.
     # grab 720 candles
     # XXX :: hopefully candles_max(exchange) > 720
-    #@info "1m" first_day (:start => half_way) (:stop => end_of_day)
+    @debug "1m" first_day (:start => half_way) (:stop => end_of_day)
     candles2 = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day-Minute(1), limit=720)
     # start at later half of the day
     # if less than 720 returned, we've found the earliest candle
     if length(candles2) < 720
-        #@info "< 720" length(candles2)
+        @debug "< 720" length(candles2)
         return candles2[1]
     else
         # if not, go to earlier half of the day
         # grab 720 more candles
-        #@info ">= 720" first_day half_way
+        @debug ">= 720" first_day half_way
         candles3 = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way-Minute(1), limit=720)
         if length(candles3) == 0
-            #@info "length(candles3) == 0"
+            @debug "length(candles3) == 0"
             return candles2[1]
         else
-            #@info "ok" length(candles3) length(candles2)
+            @debug "ok" length(candles3) length(candles2)
             return candles3[1]
         end
     end
