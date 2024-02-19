@@ -2,13 +2,14 @@ struct Bitget <: AbstractExchange
     base_url::String
     home_url::String
     http_options::Dict
+    type::String
 
-    function Bitget()
-        new("https://api.bitget.com", "https://www.bitget.com", Dict())
+    function Bitget(; type="dmcbl")
+        new("https://api.bitget.com", "https://www.bitget.com", Dict(), type)
     end
 
-    function Bitget(http_options::Dict)
-        new("https://api.bitget.com", "https://www.bitget.com", http_options)
+    function Bitget(http_options::Dict; type="dmcbl")
+        new("https://api.bitget.com", "https://www.bitget.com", http_options, type)
     end
 end
 
@@ -31,6 +32,7 @@ function candle_datetime(c::BitgetCandle)
 end
 
 function short_name(bitget::Bitget)
+    # symbol names don't collide so all market types can be saved to the same directory
     "bitget"
 end
 
@@ -38,7 +40,7 @@ function candles_max(bitget::Bitget; tf=Minute(1))
     1000
 end
 
-function get_markets(bitget::Bitget; type="dmcbl")
+function get_markets(bitget::Bitget)
     # type can be
     # umcbl (usdt settled contracts)
     # dmcbl (coin settled contracts)
@@ -46,7 +48,7 @@ function get_markets(bitget::Bitget; type="dmcbl")
     # sdmcbl (testnet coin settled contracts)
     info_url = bitget.base_url * "/api/mix/v1/market/contracts"
     q = OrderedDict(
-        "productType" => type
+        "productType" => bitget.type
     )
     uri = URI(info_url; query=q)
     res = HTTP.get(uri; bitget.http_options...)
