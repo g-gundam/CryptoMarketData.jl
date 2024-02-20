@@ -39,8 +39,35 @@ This is the most basic thing you can do with this library.
 
 ```julia-repl
 julia> using CryptoMarketData
+
 julia> bitstamp = Bitstamp()
-julia> markets = get_markets(bitstamp)
-julia> save!(bitstamp, "BTCUSD")
-julia> btcusd = load(bitstamp, "BTCUSD")
+Bitstamp("https://www.bitstamp.net")
+
+julia> markets = get_markets(bitstamp); markets[1:5]
+5-element Vector{String}:
+ "BTC/USD"
+ "BTC/EUR"
+ "BTC/GBP"
+ "BTC/PAX"
+ "GBP/USD"
+
+julia> save!(bitstamp, "BTC/USD"; endday=Date("2011-08-25"))
+┌ Info: 2011-08-18
+└   length(cs) = 683
+┌ Info: 2011-08-19
+└   length(cs) = 1440
+┌ Info: 2011-08-20
+└   length(cs) = 1440
+┌ Info: 2011-08-21
+└   length(cs) = 1440
+┌ Info: 2011-08-22
+└   length(cs) = 1440
+┌ Info: 2011-08-23
+└   length(cs) = 1440
+┌ Info: 2011-08-24
+└   length(cs) = 1440
+┌ Info: 2011-08-25
+└   length(cs) = 1440
+
+julia> btcusd = load(bitstamp, "BTC/USD")
 ```
