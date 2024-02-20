@@ -33,6 +33,14 @@ function Base.getproperty(c::BitstampCandle, s::Symbol)
     end
 end
 
+function csv_headers(bitstamp::Bitstamp)
+    [:ts, :o, :h, :l, :c, :v]
+end
+
+function csv_select(bitstamp::Bitstamp)
+    1:6
+end
+
 function ts2datetime_fn(bitstamp::Bitstamp)
     DateTime ∘ unixseconds2nanodate
 end

@@ -22,6 +22,14 @@ struct PancakeSwapCandle <: AbstractCandle
     ignore::Float64
 end
 
+function csv_headers(pancakeswap::PancakeSwap)
+    collect(fieldnames(PancakeSwapCandle))
+end
+
+function csv_select(pancakeswap::PancakeSwap)
+    1:6
+end
+
 function ts2datetime_fn(pancakeswap::PancakeSwap)
     DateTime ∘ unixmillis2nanodate
 end

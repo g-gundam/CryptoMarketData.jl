@@ -35,6 +35,14 @@ struct BinanceCandle <: AbstractCandle
     ignore::Float64
 end
 
+function csv_headers(binance::Binance)
+    collect(fieldnames(BinanceCandle))
+end
+
+function csv_select(binance::Binance)
+    1:6
+end
+
 function ts2datetime_fn(binance::Binance)
     DateTime ∘ unixmillis2nanodate
 end
@@ -75,11 +83,11 @@ function get_candles(binance::Binance, market; start, stop, tf=Minute(1), limit:
         "1m"
     end
     q = OrderedDict(
-        "interval"     => interval,
-        "startTime"    => nanodate2unixmillis(NanoDate(start)),
-        "endTime"      => nanodate2unixmillis(NanoDate(stop)),
-        "limit"        => limit,
-        "symbol"       => symbol
+        "interval" => interval,
+        "startTime" => nanodate2unixmillis(NanoDate(start)),
+        "endTime" => nanodate2unixmillis(NanoDate(stop)),
+        "limit" => limit,
+        "symbol" => symbol
     )
     ohlc_url = binance.base_url * "/dapi/v1/klines"
     uri = URI(ohlc_url, query=q)

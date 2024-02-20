@@ -35,6 +35,8 @@ export get_candles_for_day
 export save_day!
 
 # functions with exchange-specific methods
+export csv_headers
+export csv_select
 export ts2datetime_fn
 export candle_datetime
 export short_name
@@ -43,7 +45,7 @@ export get_markets
 export get_candles
 
 """
-    save!(exchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
+    save!(exchange::AbstractExchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
 
 Download 1m candles from the given exchange and market, and save them locally.
 
@@ -54,7 +56,7 @@ julia> bitstamp = Bitstamp()
 julia> save!(bitstamp, "BTC/USD", endday=Date("2020-08-16"))
 ```
 """
-function save!(exchange::AbstractExchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
+function save!(exchange::AbstractExchange, market; datadir="./data", startday=missing, endday=today(tz"UTC"), delay=0.5)
     # make directories if they don't already exist
     outdir = joinpath(datadir, short_name(exchange), replace(market, "/" => ""))
     mkpath(outdir)
@@ -62,7 +64,9 @@ function save!(exchange::AbstractExchange, market; datadir="./data", endday=toda
     # figure out what day we're on
     csv_name = last_csv(outdir)
     current_day = missing
-    if ismissing(csv_name)
+    if !ismissing(startday)
+        current_day = Date(startday)
+    elseif ismissing(csv_name)
         first_candle = earliest_candle(exchange, market)
         current_day = Date(candle_datetime(first_candle))
     else
@@ -177,7 +181,7 @@ end
 
 Load candles for the given exchange and market from the file system.
 """
-function load(exchange::AbstractExchange, market; datadir="./data", span=missing, tf::Union{Period,Missing}=missing)
+function load(exchange::AbstractExchange, market; datadir="./data", span=missing, tf::Union{Period,Missing}=missing, table=DataFrame)
     indir = joinpath(datadir, short_name(exchange), replace(market, "/" => ""))
     cfs = readdir(indir; join=true)
     if !ismissing(span)
@@ -191,8 +195,11 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
         end
     end
     res = missing
+    headers = csv_headers(exchange)
+    select = csv_select(exchange)
+    #csv_read = (cf) -> CSV.read(cf, table; headers=headers, select=select, skipto=2)
     for cf in cfs
-        csv = CSV.read(cf, DataFrame; types=Dict(:ts => UInt64))
+        csv = CSV.read(cf, table; header=headers, select=select, skipto=2)
         csv[!, :ts] = map(ts2datetime_fn(exchange), csv[!, :ts])
         if ismissing(res)
             res = csv

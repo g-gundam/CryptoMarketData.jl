@@ -67,9 +67,17 @@ end
 #
 # This leads to subtraction and addition of 1 minute at key points.
 
+function csv_headers(bitmex::Bitmex)
+    [:ts, :symbol, :o, :h, :l, :c, :trades, :v, :vwap, :lastSize, :turnOver, :homeNotional, :foreignNotional]
+end
+
+function csv_select(bitmex::Bitmex)
+    [1, 3, 4, 5, 6, 8]
+end
+
 function ts2datetime_fn(bitmex::Bitmex)
     return function (dt)
-        NanoDate(dt) - Minute(1)
+        DateTime(NanoDate(dt) - Minute(1))
     end
 end
 

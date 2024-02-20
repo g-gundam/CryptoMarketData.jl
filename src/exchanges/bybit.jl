@@ -6,7 +6,7 @@ struct Bybit <: AbstractExchange
     http_options::Dict
     category::String
 
-    function Bybit(;category="inverse")
+    function Bybit(; category="inverse")
         new(BYBIT_API, Dict(), category)
     end
 
@@ -26,8 +26,16 @@ struct BybitCandle <: AbstractCandle
     v2::Float64
 end
 
+function csv_headers(bybit::Bybit)
+    collect(fieldnames(BybitCandle)) # https://discourse.julialang.org/t/convert-tuple-to-array/2147/6
+end
+
+function csv_select(bybit::Bybit)
+    1:6
+end
+
 function ts2datetime_fn(bybit::Bybit)
-    unixmillis2nanodate
+    DateTime ∘ unixmillis2nanodate
 end
 
 function candle_datetime(c::BybitCandle)
@@ -75,11 +83,11 @@ function get_candles(bybit::Bybit, market; start, stop, tf=Minute(1), limit::Int
     end
     q = OrderedDict(
         "category" => bybit.category,
-        "symbol"   => market,
+        "symbol" => market,
         "interval" => interval,
-        "start"    => nanodate2unixmillis(NanoDate(start)),
-        "end"      => nanodate2unixmillis(NanoDate(stop)),
-        "limit"    => limit
+        "start" => nanodate2unixmillis(NanoDate(start)),
+        "end" => nanodate2unixmillis(NanoDate(stop)),
+        "limit" => limit
     )
     ohlc_url = bybit.base_url * "/v5/market/kline"
     uri = URI(ohlc_url; query=q)

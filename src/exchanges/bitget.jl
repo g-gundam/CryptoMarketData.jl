@@ -23,6 +23,14 @@ struct BitgetCandle <: AbstractCandle
     v2::Float64
 end
 
+function csv_headers(Bitget::Bitget)
+    collect(fieldnames(BitgetCandle))
+end
+
+function csv_select(Bitget::Bitget)
+    1:6
+end
+
 function ts2datetime_fn(bitget::Bitget)
     DateTime ∘ unixmillis2nanodate
 end
@@ -75,13 +83,13 @@ function get_candles(bitget::Bitget, market; start, stop, tf=Minute(1), limit::I
     end
 
     q = OrderedDict(
-        "symbolId"     => symbol,
-        "kLineStep"    => interval,
-        "kLineType"    => 1,
+        "symbolId" => symbol,
+        "kLineStep" => interval,
+        "kLineType" => 1,
         "languageType" => 0,
-        "startTime"    => nanodate2unixmillis(NanoDate(start)),
-        "endTime"      => nanodate2unixmillis(NanoDate(stop) + adjustment),
-        "limit"        => limit
+        "startTime" => nanodate2unixmillis(NanoDate(start)),
+        "endTime" => nanodate2unixmillis(NanoDate(stop) + adjustment),
+        "limit" => limit
     )
     #@info "get_candles" start q["startTime"] stop q["endTime"] limit
     ohlc_url = bitget.home_url * "/v1/kline/getMoreKlineData"
