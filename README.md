@@ -5,6 +5,8 @@
 [![Build Status](https://github.com/g-gundam/CryptoMarketData.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/g-gundam/CryptoMarketData.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/g-gundam/CryptoMarketData.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/g-gundam/CryptoMarketData.jl)
 
+A library for saving and loading OHLCV candle data from cryptocurrency exchanges
+
 ## Goals
 
 1.  **Be able to save 1 minute candle data from a variety of cryptocurrency exchanges.**
