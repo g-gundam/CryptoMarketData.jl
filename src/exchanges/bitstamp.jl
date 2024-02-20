@@ -2,7 +2,7 @@ struct Bitstamp <: AbstractExchange
     base_url::String
 
     function Bitstamp()
-        new("https://www.bitstamp.net/api/v2")
+        new("https://www.bitstamp.net")
     end
 end
 
@@ -32,6 +32,7 @@ function Base.getproperty(c::BitstampCandle, s::Symbol)
         return getfield(c, s)
     end
 end
+
 function ts2datetime_fn(bitstamp::Bitstamp)
     DateTime ∘ unixseconds2nanodate
 end
@@ -49,7 +50,7 @@ function candles_max(bitstamp::Bitstamp; tf=Minute(1))
 end
 
 function get_markets(bitstamp::Bitstamp)
-    market_url = bitstamp.base_url * "/ticker/"
+    market_url = bitstamp.base_url * "/api/v2/ticker/"
     res = HTTP.get(market_url)
     json = JSON3.read(res.body)
     return map(r -> r.pair, json)
@@ -71,7 +72,7 @@ function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limi
         "end"   => nanodate2unixseconds(NanoDate(stop)),
         "limit" => limit
     )
-    ohlc_url = bitstamp.base_url * "/ohlc/" * mark2 * "/"
+    ohlc_url = bitstamp.base_url * "/api/v2/ohlc/" * mark2 * "/"
     uri = URI(ohlc_url, query=q2)
     res = HTTP.get(uri)
     json = JSON3.read(res.body)
