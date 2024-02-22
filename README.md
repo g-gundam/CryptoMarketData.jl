@@ -24,14 +24,14 @@ A library for saving and loading OHLCV candle data from cryptocurrency exchanges
 
 ## Exchanges
 
-| Name        | Status                                                                          |
-|-------------|---------------------------------------------------------------------------------|
-| Binance     | Work in Progress                                                                |
-| Bitget      | It was working, but an undocumented API call changed and slightly broke things. |
-| Bitmex      | Done                                                                            |
-| Bitstamp    | Done                                                                            |
-| Bybit       | Done                                                                            |
-| PancakeSwap | Done                                                                            |
+| Name        | Status           |
+|-------------|------------------|
+| Binance     | Work in Progress |
+| Bitget      | Slightly Broken  |
+| Bitmex      | Done             |
+| Bitstamp    | Done             |
+| Bybit       | Done             |
+| PancakeSwap | Done             |
 
 ## Examples
 
