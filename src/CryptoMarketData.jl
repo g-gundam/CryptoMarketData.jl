@@ -8,6 +8,7 @@ using TimeZones
 using Dates
 using NanoDates
 using DataStructures
+using DocStringExtensions
 
 using CSV
 using DataFrames
@@ -45,9 +46,30 @@ export get_markets
 export get_candles
 
 """
-    save!(exchange::AbstractExchange, market; datadir="./data", endday=today(tz"UTC"), delay=0.5)
+    get_markets(exchange)
+
+Fetch the available markets for the given exchange.
+
+# Example
+
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> markets = get_markets(bitstamp)
+```
+"""
+CryptoMarketData.get_markets(exchange)
+
+"""
+$(SIGNATURES)
 
 Download 1m candles from the given exchange and market, and save them locally.
+
+# Keyword Arguments
+
+* datadir="./data" - directory where saved data is stored
+* startday - a `Date` to start fetching candles from
+* endday - a `Date` to stop fetching candles
+* delay - a delay to be passed to `sleep()` that will pause between internal calls to `save_day!()`
 
 # Example
 
@@ -93,6 +115,10 @@ end
 
 Save a day worth of 1m candles the caller provides for the
 given exchange and market.
+
+# Keyword Arguments
+
+* datadir="./data" - directory where saved data is stored
 """
 function save_day!(exchange::AbstractExchange, market, candles; datadir="./data")
     current_day = Date(candle_datetime(candles[1]))
@@ -131,7 +157,7 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     # grab 720 candles
     # XXX :: hopefully candles_max(exchange) > 720
     @debug "1m" first_day (:start => half_way) (:stop => end_of_day)
-    candles2 = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day-Minute(1), limit=720)
+    candles2 = get_candles(exchange, market; tf=Minute(1), start=half_way, stop=end_of_day - Minute(1), limit=720)
     # start at later half of the day
     # if less than 720 returned, we've found the earliest candle
     if length(candles2) < 720
@@ -141,7 +167,7 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
         # if not, go to earlier half of the day
         # grab 720 more candles
         @debug ">= 720" first_day half_way
-        candles3 = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way-Minute(1), limit=720)
+        candles3 = get_candles(exchange, market; tf=Minute(1), start=first_day, stop=half_way - Minute(1), limit=720)
         if length(candles3) == 0
             @debug "length(candles3) == 0"
             return candles2[1]
@@ -177,9 +203,23 @@ function get_candles_for_day(exchange::AbstractExchange, market, day::Date)
 end
 
 """
-    load(exchange, market)
+$(SIGNATURES)
 
 Load candles for the given exchange and market from the file system.
+
+# Keyword Arguments
+
+* datadir="./data" - directory where saved data is stored
+* span - a `Date` span that defines what Dates to load candles.  If it's `missing`, load everything.
+* tf - a `Period` that is used to aggregate 1m candles into higher timeframes.
+* table - a Tables.jl-compatible struct to load candles into.  The default is `DataFrame`.
+
+# Example
+
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> btcusd4h = load!(bitstamp, "BTC/USD"; span=Date("2024-01-01"):Date("2024-02-10"), tf=Hour(4))
+```
 """
 function load(exchange::AbstractExchange, market; datadir="./data", span=missing, tf::Union{Period,Missing}=missing, table=DataFrame)
     indir = joinpath(datadir, short_name(exchange), replace(market, "/" => ""))
