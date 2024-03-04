@@ -6,6 +6,15 @@ function pf64(n)
     parse(Float64, n)
 end
 
+function first_csv(outdir)
+    cfs = readdir(outdir)
+    if length(cfs) == 0
+        missing
+    else
+        cfs[1]
+    end
+end
+
 function last_csv(outdir)
     cfs = readdir(outdir)
     if length(cfs) == 0
