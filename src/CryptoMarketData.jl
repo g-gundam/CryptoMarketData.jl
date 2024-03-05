@@ -29,7 +29,7 @@ include("exchanges/bybit.jl")              # DONE
 include("exchanges/pancakeswap.jl")        # DONE
 
 # general functions
-export get_local_markets
+export get_saved_markets
 
 # general functions that operate on exchanges
 export save!
@@ -67,6 +67,10 @@ $(SIGNATURES)
 
 Return a DataFrame that lists the currently saved markets.
 
+# Keyword Arguments
+
+* datadir="./data" - directory where saved data is stored
+
 # Example
 
 ```julia-repl
@@ -87,7 +91,7 @@ julia> saved = get_local_markets()
   10 │ pancakeswap    BTCUSD          2023-03-15  2024-03-04
 ```
 """
-function get_local_markets(; datadir="./data")
+function get_saved_markets(; datadir="./data")
     @debug "datadir" datadir
     df = DataFrame(exchange=[], market=[], start=[], stop=[])
     exchanges = readdir(datadir)
