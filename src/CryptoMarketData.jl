@@ -74,7 +74,7 @@ Return a DataFrame that lists the currently saved markets.
 # Example
 
 ```julia-repl
-julia> saved = get_local_markets()
+julia> saved = get_saved_markets()
 10×4 DataFrame
  Row │ exchange       market          start       stop
      │ Any            Any             Any         Any
