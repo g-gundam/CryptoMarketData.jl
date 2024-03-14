@@ -25,6 +25,11 @@ The constructor for `Bitget` takes an optional named parameter `type` to
 specify which [`productType`](https://bitgetlimited.github.io/apidoc/en/mix/#producttype)
 to use.  The default value is `dmcbl`.
 
+```julia-repl
+julia> bitget_u = Bitget(;type="umcbl")
+Bitget("https://api.bitget.com", "https://www.bitget.com", Dict{Any, Any}(), "umcbl")
+```
+
 Proxies are needed if you're local IP is from a forbidden country.
 
 ## Bitmex
