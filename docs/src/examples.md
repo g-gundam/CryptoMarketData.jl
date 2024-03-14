@@ -23,8 +23,29 @@ julia> pancakeswap = PancakeSwap()
 PancakeSwap("https://perp.pancakeswap.finance", Dict{Any, Any}())
 ```
 
-Some of you who live in forbidden countries will need to use a proxy. Setting
-up a proxy is beyond the scope of this document, but I recommend
+Some exchanges categorize their markets in a way that affects the API calls that must be used to access them.
+This is expressed during exchange construction.
+
+```julia-repl
+julia> bitget_u = Bitget(;type="umcbl")
+Bitget("https://api.bitget.com", "https://www.bitget.com", Dict{Any, Any}(), "umcbl")
+
+julia> bitget_d = Bitget(;type="dmcbl") # default
+Bitget("https://api.bitget.com", "https://www.bitget.com", Dict{Any, Any}(), "dmcbl")
+
+julia> markets_u = get_markets(bitget_u);
+
+julia> markets_d = get_markets(bitget_d);
+
+julia> size(markets_u)
+(195,)
+
+julia> size(markets_d)
+(12,)
+```
+
+Some of you who live in forbidden countries will need to use a proxy that's outside of your home country to get around IP bans. 
+Setting up a proxy is beyond the scope of this document, but I recommend
 [Squid](https://www.digitalocean.com/community/tutorials/how-to-set-up-squid-proxy-on-ubuntu-22-04).
 
 ```julia-repl

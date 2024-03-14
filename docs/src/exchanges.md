@@ -1,4 +1,4 @@
-# Exchanges Notes
+# Exchanges
 
 ## Binance
 
@@ -20,6 +20,10 @@ I had to use an undocumented API that their trading front-end uses to acquire
 1m candles, because their official API only gives you the last 30 days of 1m
 candles.  It was working fine for a while, but in early February 2024, its
 behavior changed and broke `earliest_candle()`.
+
+The constructor for `Bitget` takes an optional named parameter `type` to
+specify which [`productType`](https://bitgetlimited.github.io/apidoc/en/mix/#producttype)
+to use.  The default value is `dmcbl`.
 
 Proxies are needed if you're local IP is from a forbidden country.
 
@@ -45,9 +49,18 @@ back all the way to 2011-08-18 which is the longest of any known exchange.
 
 Status:  DONE
 
-The v5 iteration of their API is one of the nicest I've worked with.
+The `Bybit` constructor takes an optional `category` parameter that
+chooses which of the 3 market categories to use.  The default value is `inverse`,
+but `linear` and `spot` can also be specified.
+
+```julia-repl
+julia> bybit_spot = Bybit(;category=spot)
+Bybit("https://api.bybit.com", Dict{Any, Any}(), "spot")
+```
 
 Proxies are needed if you're local IP is from a forbidden country.
+
+(The v5 iteration of their API is one of the nicest I've worked with.)
 
 ## PancakeSwap
 
