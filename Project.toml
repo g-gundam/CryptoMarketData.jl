@@ -14,6 +14,7 @@ HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 NanoDates = "46f1a544-deae-4307-8689-c12aa3c955c6"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+ProtoStructs = "437b6fc4-8e8e-11e9-3fa1-ad391e66c018"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
 
