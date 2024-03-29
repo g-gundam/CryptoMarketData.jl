@@ -46,12 +46,50 @@ function candles_max(pancakeswap::PancakeSwap; tf=Minute(1))
     1500
 end
 
+"""
+Hard-code the [list of market pairs](https://docs.pancakeswap.finance/products/perpetual-trading/perpetual-trading-v2/supported-chains-modes-and-markets#supported-chain-markets) until an API for this info is discovered.
+"""
+PANCAKESWAP_MARKETS = [
+    "BTCUSD",
+    "MADBTCUSD",
+    "ETHUSD",
+    "BNBUSD",
+    "SUIUSD",
+    "CAKEUSD",
+    "ARBUSD",
+    "XRPUSD",
+    "OPUSD",
+    "RDNTUSD",
+    "1000PEPEUSD",
+    "SOLUSD",
+    "DOTUSD",
+    "MKRUSD",
+    "LDOUSD",
+    "UNIUSD",
+    "DOGEUSD",
+    "GMXUSD",
+    "MATICUSD",
+    "BCHUSD",
+    "LTCUSD",
+    "TRXUSD",
+    "ADAUSD",
+    "LINKUSD",
+    "AVAXUSD",
+    "EURUSD",
+    "JPYUSD",
+    "AUDUSD",
+    "GBPUSD",
+    "CHFUSD",
+    "MXNUSD"
+]
+
 function get_markets(pancakeswap::PancakeSwap)
-    info_url = pancakeswap.base_url * "/fapi/v1/exchangeInfo"
-    uri = URI(info_url)
-    res = HTTP.get(uri; pancakeswap.http_options...)
-    json = JSON3.read(res.body)
-    return map(m -> m[:symbol], json[:symbols])
+    # info_url = pancakeswap.base_url * "/fapi/v1/exchangeInfo"
+    # uri = URI(info_url)
+    # res = HTTP.get(uri; pancakeswap.http_options...)
+    # json = JSON3.read(res.body)
+    # return map(m -> m[:symbol], json[:symbols])
+    return PANCAKESWAP_MARKETS
 end
 
 function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1), limit::Integer=10)
