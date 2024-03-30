@@ -46,9 +46,7 @@ function candles_max(pancakeswap::PancakeSwap; tf=Minute(1))
     1500
 end
 
-"""
-Hard-code the [list of market pairs](https://docs.pancakeswap.finance/products/perpetual-trading/perpetual-trading-v2/supported-chains-modes-and-markets#supported-chain-markets) until an API for this info is discovered.
-"""
+# Hard-code the [list of market pairs](https://docs.pancakeswap.finance/products/perpetual-trading/perpetual-trading-v2/supported-chains-modes-and-markets#supported-chain-markets) until an API for this info is discovered.
 PANCAKESWAP_MARKETS = [
     "BTCUSD",
     "MADBTCUSD",
