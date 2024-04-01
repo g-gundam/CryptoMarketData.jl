@@ -275,7 +275,7 @@ Load candles for the given exchange and market from the file system.
 
 ```julia-repl
 julia> bitstamp = Bitstamp()
-julia> btcusd4h = load!(bitstamp, "BTC/USD"; span=Date("2024-01-01"):Date("2024-02-10"), tf=Hour(4))
+julia> btcusd4h = load(bitstamp, "BTC/USD"; span=Date("2024-01-01"):Date("2024-02-10"), tf=Hour(4))
 ```
 """
 function load(exchange::AbstractExchange, market; datadir="./data", span=missing, tf::Union{Period,Missing}=missing, table=DataFrame)
@@ -325,3 +325,19 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
 end
 
 end
+
+#=
+
+using CryptoMarketData
+using DataFrames
+using DataFramesMeta
+using NanoDates
+
+1 + 1
+b = 9
+c = 9
+markets = get_saved_markets()
+pancakeswap = PancakeSwap()
+bitstamp = Bitstamp()
+
+=#
