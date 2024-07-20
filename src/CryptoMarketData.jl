@@ -14,8 +14,24 @@ using CSV
 using DataFrames
 using DataFramesMeta
 
+# Every exchange implements its own subtype of these.
 abstract type AbstractExchange end
 abstract type AbstractCandle end
+
+# This is used to contain WebSocket sessions and interact with them.
+# It's generic and can be used for any exchange.
+@kwdef mutable struct Session
+    url::URI
+    commands::Union{Channel, Missing}
+    messages::Union{Channel, Missing}
+    ws::Union{HTTP.WebSocket, Missing}
+    task::Union{Task, Missing}
+end
+
+# Include NHDaly/Select locally.
+# It may be old and unmaintained, but I like the way it works.
+# When a better way to wait on multiple channels appears, I'll switch.
+include("Select.jl")
 
 # unexported utility functions
 include("helpers.jl")
@@ -47,6 +63,7 @@ export short_name
 export candles_max
 export get_markets
 export get_candles
+export subscribe
 
 """
     get_markets(exchange)
@@ -61,6 +78,78 @@ julia> markets = get_markets(bitstamp)
 ```
 """
 CryptoMarketData.get_markets(exchange)
+
+"""
+    subscribe(url::String)
+
+This is a convenience method that accepts URLs as strings.
+"""
+function subscribe(url::String)
+    uri = URI(url)
+    subscribe(uri)
+end
+
+"""
+    subscribe(uri::URI)
+
+This is the general version of websocket subscription that the other exchange-specific
+versions of subscribe are built on.  It connects to the given uri and returns a struct
+that contains two Channels that can be used to interact with the WebSocket.
+
+# Example
+
+```julia-repl
+julia> using URIs, JSON3
+
+julia> s = subscribe(URI("wss://ws.bitstamp.net"))
+CryptoMarketData.Session(URI("wss://ws.bitstamp.net"), missing, missing, missing, Task (runnable) @0x00007970dac63d00)
+
+julia> btcusd_subscribe = Dict(:event => "bts:subscribe", :data => Dict(:channel => "live_trades_btcusd"))
+Dict{Symbol, Any} with 2 entries:
+  :event => "bts:subscribe"
+  :data  => Dict(:channel=>"live_trades_btcusd")
+
+julia> put!(s.commands, JSON3.write(btcusd_subscribe))
+"{\"event\":\"bts:subscribe\",\"data\":{\"channel\":\"live_trades_btcusd\"}}"
+
+julia> s.messages
+Channel{Any}(32) (2 items available)
+
+julia> take!(s.messages)
+"{\"event\":\"bts:subscription_succeeded\",\"channel\":\"live_trades_btcusd\",\"data\":{}}"
+
+julia> JSON3.read(take!(s.messages))
+JSON3.Object{Base.CodeUnits{UInt8, String}, Vector{UInt64}} with 3 entries:
+  :data    => {…
+  :channel => "live_trades_btcusd"
+  :event   => "trade"
+```
+"""
+function subscribe(uri::URI)
+    session = Session(uri, missing, missing, missing, missing)
+    handler = function (ws)
+        session.ws = ws
+        session.commands = Channel(32)
+        session.messages = Channel(32) do ch
+            while true
+                msg = WebSockets.receive(ws)
+                put!(ch, msg)
+            end
+        end
+        try
+            while true
+                command = take!(session.commands)
+                WebSockets.send(session.ws, command)
+            end
+        catch e
+            @warn "exception, restart"
+            sleep(0.10) # TODO: debounce the websocket reconnection
+            session.task = Threads.@spawn WebSockets.open(handler, uri)
+        end
+    end
+    session.task = Threads.@spawn WebSockets.open(handler, uri)
+    return session
+end
 
 """
 $(SIGNATURES)
@@ -332,6 +421,7 @@ using CryptoMarketData
 using DataFrames
 using DataFramesMeta
 using NanoDates
+using Dates
 
 1 + 1
 b = 9
@@ -339,5 +429,8 @@ c = 9
 markets = get_saved_markets()
 pancakeswap = PancakeSwap()
 bitstamp = Bitstamp()
+btcusd = load(bitstamp, "BTCUSD"; tf=Minute(1), span=Date("2024-01-01"):Date("2024-01-02"))
+
+s = subscribe(pancakeswap) # s for websocket session
 
 =#

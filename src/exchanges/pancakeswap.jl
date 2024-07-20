@@ -129,5 +129,14 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
     end
 end
 
+function subscribe(pancakeswap::PancakeSwap)
+    uri = URI("wss://perp-fstream.pancakeswap.finance/plain/stream?streams=!markPriceTicker@arr")
+    session = subscribe(uri)
+    return session
+end
+
+function subscribe(pancakeswap::PancakeSwap, market)
+end
+
 export PancakeSwap
 export PancakeSwapCandle
