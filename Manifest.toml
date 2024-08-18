@@ -2,7 +2,7 @@
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "68ae83fe6b0795a36eb9adea3ba06fbee7938c71"
+project_hash = "9f44180abcb732e9f7c6921b9e97b05fa274a1c5"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -75,9 +75,9 @@ version = "1.6.1"
 
 [[deps.DataFramesMeta]]
 deps = ["Chain", "DataFrames", "MacroTools", "OrderedCollections", "Reexport", "TableMetadataTools"]
-git-tree-sha1 = "f912a2126c99ff9783273efa38b0181bfbf9d322"
+git-tree-sha1 = "7042a6ad5910dc9edeae814e1110209752a1c996"
 uuid = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
-version = "0.15.2"
+version = "0.15.3"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
@@ -131,9 +131,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "ExceptionUnwrapping", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "2c3ec1f90bb4a8f7beafb0cffea8a4c3f4e636ab"
+git-tree-sha1 = "d1d712be3164d61d1fb98e7ce9bcbc6cc06b45ed"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.10.6"
+version = "1.10.8"
 
 [[deps.InlineStrings]]
 deps = ["Parsers"]
@@ -260,9 +260,9 @@ version = "2023.1.10"
 
 [[deps.NanoDates]]
 deps = ["Dates", "Parsers"]
-git-tree-sha1 = "382971d0eaee7e6d8f86a8c418fff149d66e7fdb"
+git-tree-sha1 = "850a0557ae5934f6e67ac0dc5ca13d0328422d1f"
 uuid = "46f1a544-deae-4307-8689-c12aa3c955c6"
-version = "0.3.3"
+version = "1.0.3"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
@@ -442,9 +442,9 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.TimeZones]]
 deps = ["Dates", "Downloads", "InlineStrings", "Mocking", "Printf", "Scratch", "TZJData", "Unicode", "p7zip_jll"]
-git-tree-sha1 = "96793c9316d6c9f9be4641f2e5b1319a205e6f27"
+git-tree-sha1 = "b92aebdd3555f3a7e3267cf17702033c2814ef48"
 uuid = "f269a46b-ccf7-5d73-abea-4c690281aa53"
-version = "1.15.0"
+version = "1.18.0"
 
     [deps.TimeZones.extensions]
     TimeZonesRecipesBaseExt = "RecipesBase"
