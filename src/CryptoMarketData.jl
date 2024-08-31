@@ -420,8 +420,8 @@ end
 using CryptoMarketData
 using DataFrames
 using DataFramesMeta
-using NanoDates
 using Dates
+using NanoDates
 
 1 + 1
 b = 9
