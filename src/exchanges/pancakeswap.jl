@@ -5,6 +5,10 @@ struct PancakeSwap <: AbstractExchange
     function PancakeSwap()
         new("https://perp.pancakeswap.finance", Dict())
     end
+
+    function PancakeSwap(http_options::Dict)
+        new("https://perp.pancakeswap.finance", http_options)
+    end
 end
 
 struct PancakeSwapCandle <: AbstractCandle
