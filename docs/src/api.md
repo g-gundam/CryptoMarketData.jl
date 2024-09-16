@@ -64,7 +64,29 @@ save_day!
 - candles_max
 - [`get_markets`](@ref)
 - get_candles
+- [`subscribe`](@ref)
 
 ```@docs
 get_markets
+```
+
+```@docs
+subscribe
+```
+
+## Select
+
+This was originally [NHDaly/Select.jl](https://github.com/NHDaly/Select.jl), but because it wasn't
+easily installable, I absorbed it into this project.  If a better way to multiplex multiple streams
+comes along, this may go away, but I'm going to use it until then.
+
+- [`CryptoMarketData.Select.select`](@ref)
+- [`CryptoMarketData.Select.@select`](@ref)
+
+```@docs
+CryptoMarketData.Select.select
+```
+
+```@docs
+CryptoMarketData.Select.@select
 ```
