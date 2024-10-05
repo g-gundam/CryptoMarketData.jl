@@ -43,6 +43,12 @@ One thing I like about this library is that you don't need to be authenticated
 to use it.  However, Bitmex gives authenticated users a much better rate limit,
 so I'd like to support authentication eventually.
 
+```julia-repl
+julia> bitmex = Bitmex()
+Bitmex("https://www.bitmex.com", Dict{Any, Any}())
+julia> save!(bitmex, "ETHUSD"; delay=3.5) # Add a longer delay for Bitmex.
+```
+
 ## Bitstamp
 
 Status:  DONE
