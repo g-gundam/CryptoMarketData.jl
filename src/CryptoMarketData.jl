@@ -250,7 +250,7 @@ function save!(exchange::AbstractExchange, market; datadir="./data", startday=mi
     while current_day <= endday
         cs = get_candles_for_day(exchange, market, current_day)
         @info current_day length(cs)
-        save_day!(exchange, market, cs)
+        save_day!(exchange, market, cs; datadir)
         current_day = current_day + Dates.Day(1)
         sleep(delay)
     end
