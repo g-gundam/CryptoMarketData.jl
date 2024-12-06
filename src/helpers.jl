@@ -7,7 +7,7 @@ function pf64(n)
 end
 
 function first_csv(outdir)
-    cfs = readdir(outdir)
+    cfs = @chain readdir(outdir) filter(f -> !isnothing(match(r"^\d+-\d{2}-\d{2}.csv", f)), _)
     if length(cfs) == 0
         missing
     else
@@ -16,7 +16,7 @@ function first_csv(outdir)
 end
 
 function last_csv(outdir)
-    cfs = readdir(outdir)
+    cfs = @chain readdir(outdir) filter(f -> !isnothing(match(r"^\d+-\d{2}-\d{2}.csv", f)), _)
     if length(cfs) == 0
         missing
     else
