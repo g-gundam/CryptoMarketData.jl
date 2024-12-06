@@ -1,6 +1,2 @@
-using CryptoMarketData
-using Test
-
-@testset "CryptoMarketData.jl" begin
-    # Write your tests here.
-end
+using TidyTest
+@run_tests verbose=true
