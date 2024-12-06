@@ -3,7 +3,7 @@
 *.jl.mem
 /docs/Manifest.toml
 /docs/build/
-data/
+/data/
 
 .*.~undo-tree~
 .dir-locals.*
