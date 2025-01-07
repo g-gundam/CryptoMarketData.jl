@@ -4,6 +4,8 @@
 
 Status:  Work in Progress
 
+Docs: [klines](https://developers.binance.com/docs/derivatives/coin-margined-futures/market-data/Kline-Candlestick-Data)
+
 I have a preliminary `Binance` struct, and it supports Binance's COIN-M Futures
 API.  It works, but to properly support all of Binance's APIs, I'm going to
 have to add more structs and rename the current `Binance` struct to something
@@ -15,6 +17,8 @@ Proxies are needed if you're local IP is from a forbidden country.
 ## Bitget
 
 Status:  Slightly Broken
+
+Docs: [market/candles](https://bitgetlimited.github.io/apidoc/en/mix/#get-candle-data)
 
 I had to use an undocumented API that their trading front-end uses to acquire
 1m candles, because their official API only gives you the last 30 days of 1m
@@ -36,6 +40,8 @@ Proxies are needed if you're local IP is from a forbidden country.
 
 Status:  DONE
 
+Docs:  [trade/bucketed](https://www.bitmex.com/api/explorer/#!/Trade/Trade_getBucketed)
+
 When running `save!(bitmex, market)`, I strongly advise setting `delay=3.5`.
 That'll keep you under the rate limit for unauthenticated users.
 
@@ -53,12 +59,16 @@ julia> save!(bitmex, "ETHUSD"; delay=3.5) # Add a longer delay for Bitmex.
 
 Status:  DONE
 
+Docs: [ohlc/:symbol](https://www.bitstamp.net/api/#tag/Market-info/operation/GetMarkets)
+
 This exchange is a valuable source of historical data.  Their "BTC/USD" goes
 back all the way to 2011-08-18 which is the longest of any known exchange.
 
 ## Bybit
 
 Status:  DONE
+
+Docs: [market/kline](https://bybit-exchange.github.io/docs/api-explorer/v5/market/kline)
 
 The `Bybit` constructor takes an optional `category` parameter that
 chooses which of the 3 market categories to use.  The default value is `inverse`,
@@ -76,6 +86,8 @@ Proxies are needed if you're local IP is from a forbidden country.
 ## PancakeSwap
 
 Status:  DONE*
+
+Docs: [history](https://benchmarks.pyth.network/v1/shims/tradingview/history?symbol=Crypto.BTC/USD&from=1736148379&to=1736238379&resolution=5), [apollox](https://apollox-finance.gitbook.io/apollox-finance/welcome/trading-on-v2/how-to-interact-directly-with-the-contract)
 
 I say it's done, but I'm not totally sure.  Instead of using documentation
 (which I couldn't find), I ended up reverse engineering their APIs.  I later
