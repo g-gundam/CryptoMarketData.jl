@@ -40,7 +40,7 @@ include("helpers.jl")
 include("exchanges/binance.jl")            # DONE
 include("exchanges/bitget.jl")             # DONE
 include("exchanges/bitmex.jl")             # DONE
-include("exchanges/bitstamp.jl")           # DONE
+include("exchanges/bitstamp.jl")           # XXX
 include("exchanges/bybit.jl")              # DONE
 include("exchanges/pancakeswap.jl")        # DONE
 
