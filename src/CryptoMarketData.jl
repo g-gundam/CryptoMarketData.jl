@@ -223,6 +223,12 @@ Download 1m candles from the given exchange and market, and save them locally.
 julia> bitstamp = Bitstamp()
 julia> save!(bitstamp, "BTC/USD", endday=Date("2020-08-16"))
 ```
+
+To monitor its progress on long downloads, set the `JULIA_DEBUG` environment variable.
+This will cause debug log messages to be emitted before each day of candles is downloaded.
+
+```julia-repl
+julia> ENV["JULIA_DEBUG"] = "CryptoMarketData"
 """
 function save!(exchange::AbstractExchange, market; datadir="./data", startday=missing, endday=today(tz"UTC"), delay=0.5)
     # make directories if they don't already exist
@@ -249,7 +255,7 @@ function save!(exchange::AbstractExchange, market; datadir="./data", startday=mi
 
     while current_day <= endday
         cs = get_candles_for_day(exchange, market, current_day)
-        @info current_day length(cs)
+        @debug current_day length(cs)
         save_day!(exchange, market, cs; datadir)
         current_day = current_day + Dates.Day(1)
         sleep(delay)
