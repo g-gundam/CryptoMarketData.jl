@@ -1,31 +1,16 @@
 const BITMEX_API = "https://www.bitmex.com"
 const BITMEX_TESTNET_API = "https://testnet.bitmex.com"
 
-struct Bitmex <: AbstractExchange
-    base_url::String
-    http_options::Dict
+@kwdef struct Bitmex <: AbstractExchange
+    base_url::AbstractString = BITMEX_API
+    http_options::AbstractDict = Dict{AbstractString, AbstractString}()
 
-    function Bitmex()
-        new("https://www.bitmex.com", Dict())
-    end
-
-    function Bitmex(http_options::Dict)
-        new("https://www.bitmex.com", http_options)
-    end
-
-    function Bitmex(base_url::String)
-        new(base_url, Dict())
-    end
-
-    function Bitmex(base_url::String, http_options::Dict)
-        new(base_url, http_options)
-    end
     # TODO - implement optional authentication to get improved rate limits
     #        https://www.bitmex.com/app/apiKeysUsage
     #        https://www.bitmex.com/app/restAPI#Limits
 end
 
-struct BitmexCandle <: AbstractCandle
+@kwdef struct BitmexCandle <: AbstractCandle
     timestamp::String
     symbol::String
     open::Union{Float64,Missing}
