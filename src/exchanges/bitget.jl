@@ -1,19 +1,14 @@
-struct Bitget <: AbstractExchange
-    base_url::String
-    home_url::String
-    http_options::Dict
-    type::String
+BITGET_API = "https://api.bitget.com"
+BITGET_HOME = "https://www.bitget.com"
 
-    function Bitget(; type="dmcbl")
-        new("https://api.bitget.com", "https://www.bitget.com", Dict(), type)
-    end
-
-    function Bitget(http_options::Dict; type="dmcbl")
-        new("https://api.bitget.com", "https://www.bitget.com", http_options, type)
-    end
+@kwdef = struct Bitget <: AbstractExchange
+    base_url::AbstractString = BITGET_API
+    home_url::AbstractString = BITGET_HOME
+    http_options::AbstractDict = Dict{Symbol,AbstractString}()
+    type::AbstractString = "dmcbl"
 end
 
-struct BitgetCandle <: AbstractCandle
+@kwdef = struct BitgetCandle <: AbstractCandle
     ts::UInt64
     o::Float64
     h::Float64
