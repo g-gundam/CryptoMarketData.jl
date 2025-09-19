@@ -1,21 +1,13 @@
 const BYBIT_API = "https://api.bybit.com"
 const BYBIT_TESTNET_API = "https://api-testnet.bybit.com"
 
-struct Bybit <: AbstractExchange
-    base_url::String
-    http_options::Dict
-    category::String
-
-    function Bybit(; category="inverse")
-        new(BYBIT_API, Dict(), category)
-    end
-
-    function Bybit(http_options::Dict; category="inverse")
-        new(BYBIT_API, http_options, category)
-    end
+@kwdef struct Bybit <: AbstractExchange
+    base_url::AbstractString = BYBIT_API
+    http_options::AbstractDict = Dict{Symbol,AbstractString}()
+    category::AbstractString = "inverse" # TODO: Make an enum for linear, inverse, option, spot
 end
 
-struct BybitCandle <: AbstractCandle
+@kwdef struct BybitCandle <: AbstractCandle
     # Their API returns candles in a JSON array, so I picked the field names to suit me.
     ts::UInt64
     o::Float64
