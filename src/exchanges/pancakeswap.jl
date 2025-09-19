@@ -1,17 +1,11 @@
-struct PancakeSwap <: AbstractExchange
-    base_url::String
-    http_options::Dict
+PANCAKESWAP_API = "https://perp.pancakeswap.finance"
 
-    function PancakeSwap()
-        new("https://perp.pancakeswap.finance", Dict())
-    end
-
-    function PancakeSwap(http_options::Dict)
-        new("https://perp.pancakeswap.finance", http_options)
-    end
+@kwdef struct PancakeSwap <: AbstractExchange
+    base_url::AbstractString = PANCAKESWAP_API
+    http_options::AbstractDict = Dict{Symbol,AbstractString}()
 end
 
-struct PancakeSwapCandle <: AbstractCandle
+@kwdef struct PancakeSwapCandle <: AbstractCandle
     ts::UInt64
     o::Float64
     h::Float64
