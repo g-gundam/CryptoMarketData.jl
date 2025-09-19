@@ -1,12 +1,10 @@
-struct Bitstamp <: AbstractExchange
-    base_url::String
+BITSTAMP_API = "https://www.bitstamp.net"
 
-    function Bitstamp()
-        new("https://www.bitstamp.net")
-    end
+@kwdef struct Bitstamp <: AbstractExchange
+    base_url::String
 end
 
-struct BitstampCandle <: AbstractCandle
+@kwdef struct BitstampCandle <: AbstractCandle
     timestamp::UInt64
     open::Union{Float64,Missing}
     high::Union{Float64,Missing}
