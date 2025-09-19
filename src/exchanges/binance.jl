@@ -1,26 +1,11 @@
+BINANCE_API = "https://dapi.binance.com"
 
-struct Binance <: AbstractExchange
-    base_url::String
-    http_options::Dict
-
-    function Binance()
-        new("https://dapi.binance.com", Dict())
-    end
-
-    function Binance(http_options::Dict)
-        new("https://dapi.binance.com", http_options)
-    end
-
-    function Binance(base_url::String)
-        new(base_url, Dict())
-    end
-
-    function Binance(base_url::String, http_options::Dict)
-        new(base_url, http_options)
-    end
+@kwdef struct Binance <: AbstractExchange
+    base_url::AbstractString = BINANCE_API
+    http_options::AbstractDict = Dict{Symbol,AbstractString}()
 end
 
-struct BinanceCandle <: AbstractCandle
+@kwdef struct BinanceCandle <: AbstractCandle
     ts::UInt64
     o::Float64
     h::Float64
