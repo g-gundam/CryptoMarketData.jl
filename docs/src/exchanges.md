@@ -75,7 +75,7 @@ chooses which of the 3 market categories to use.  The default value is `inverse`
 but `linear` and `spot` can also be specified.
 
 ```julia-repl
-julia> bybit_spot = Bybit(;category=spot)
+julia> bybit_spot = Bybit(category="spot")
 Bybit("https://api.bybit.com", Dict{Any, Any}(), "spot")
 ```
 
