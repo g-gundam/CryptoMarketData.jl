@@ -1,14 +1,14 @@
 BITGET_API = "https://api.bitget.com"
 BITGET_HOME = "https://www.bitget.com"
 
-@kwdef = struct Bitget <: AbstractExchange
+@kwdef struct Bitget <: AbstractExchange
     base_url::AbstractString = BITGET_API
     home_url::AbstractString = BITGET_HOME
     http_options::AbstractDict = Dict{Symbol,AbstractString}()
     type::AbstractString = "dmcbl"
 end
 
-@kwdef = struct BitgetCandle <: AbstractCandle
+@kwdef struct BitgetCandle <: AbstractCandle
     ts::UInt64
     o::Float64
     h::Float64
