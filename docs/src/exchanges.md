@@ -95,3 +95,12 @@ discovered that they look a lot like Binance's APIs, and that helped me take
 this to a working state.
 
 This is the only DEX among the currently supported exchanges.
+
+```julia-repl
+julia> http_options = Dict(:proxy => "http://user:password@proxy:3128")
+Dict{Symbol, String} with 1 entry:
+  :proxy => "http://user:password@proxy:3128"
+  
+julia> pancakeswap = PancakeSwap(http_options)
+PancakeSwap("https://perp.pancakeswap.finance", Dict(:proxy => "http://user:password@proxy:3128"))
+```
