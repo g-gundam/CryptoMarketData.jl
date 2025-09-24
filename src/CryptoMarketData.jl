@@ -229,6 +229,7 @@ This will cause debug log messages to be emitted before each day of candles is d
 
 ```julia-repl
 julia> ENV["JULIA_DEBUG"] = "CryptoMarketData"
+```
 """
 function save!(exchange::AbstractExchange, market; datadir="./data", startday=missing, endday=today(tz"UTC"), delay=0.5)
     # make directories if they don't already exist
