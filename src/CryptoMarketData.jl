@@ -12,7 +12,7 @@ using DocStringExtensions
 
 using CSV
 using DataFrames
-using DataFramesMeta
+using Chain
 
 # Every exchange implements its own subtype of these.
 abstract type AbstractExchange end
@@ -406,16 +406,18 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
         return res
     else
         return @chain res begin
-            @transform(:ts2 = floor.(:ts, tf))
+            transform(:ts => (ts -> floor.(ts, tf)) => :ts2)
             groupby(:ts2) # LSP doesn't know the @chain macro is doing magic.
-            @combine begin
-                :o = first(:o)
-                :h = maximum(:h)
-                :l = minimum(:l)
-                :c = last(:c)
-                :v = sum(:v)
-            end
-            @select(:ts = :ts2, :o, :h, :l, :c, :v)
+            combine(
+                :o => (o -> first(o))   => :o,
+                :h => (h -> maximum(h)) => :h,
+                :l => (l -> minimum(l)) => :l,
+                :c => (c -> last(c))    => :c,
+                :v => (v -> sum(v))     => :v
+            )
+            # XXX: I was forced to be explicit, but I don't know
+            # what select method I was conflicting with.
+            DataFrames.select(:ts2=>:ts, :o, :h, :l, :c, :v) 
         end
     end
 end
@@ -439,5 +441,20 @@ bitstamp = Bitstamp()
 btcusd = load(bitstamp, "BTCUSD"; tf=Minute(1), span=Date("2024-01-01"):Date("2024-01-02"))
 
 s = subscribe(pancakeswap) # s for websocket session
+
+tf = Hour(6)
+fix = @chain res begin
+    transform(:ts => (ts -> floor.(ts, tf)) => :ts2)
+    groupby(:ts2) # LSP doesn't know the @chain macro is doing magic.
+    combine(
+        :o => (o -> first(o))   => :o,
+        :h => (h -> maximum(h)) => :h,
+        :l => (l -> minimum(l)) => :l,
+        :c => (c -> last(c))    => :c,
+        :v => (v -> sum(v))     => :v
+    )
+    #@select(:ts = :ts2, :o, :h, :l, :c, :v)
+    select(:ts2=>:ts, :o, :h, :l, :c, :v)
+end
 
 =#
