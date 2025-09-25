@@ -18,6 +18,7 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 TidyTest = "ef104744-fcb3-4e7e-8bb2-6e95860d81ed"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+Visor = "cf786855-3531-4b86-ba6e-3e33dce7dcdb"
 
 [compat]
 CSV = "0.10"
@@ -32,6 +33,7 @@ Nullables = "1"
 TidyTest = "0.1"
 TimeZones = "1"
 URIs = "1"
+Visor = "0.8"
 julia = "1"
 
 [extras]
