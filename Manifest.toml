@@ -2,7 +2,7 @@
 
 julia_version = "1.12.0"
 manifest_format = "2.0"
-project_hash = "260db8b1e2da2e003b75a6f4e92cfcdca4acb6af"
+project_hash = "b872c5efeae2fd14e15d7819ef34bc27006c6bdb"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -65,7 +65,7 @@ uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 version = "4.1.1"
 
 [[deps.CryptoMarketData]]
-deps = ["CSV", "Chain", "DataFrames", "DataStructures", "Dates", "DocStringExtensions", "HTTP", "JSON3", "NanoDates", "Nullables", "Printf", "TidyTest", "TimeZones", "URIs"]
+deps = ["CSV", "Chain", "DataFrames", "DataStructures", "Dates", "DocStringExtensions", "HTTP", "JSON3", "NanoDates", "Nullables", "Printf", "TidyTest", "TimeZones", "URIs", "Visor"]
 path = "."
 uuid = "57973c84-8724-49d2-9af5-7f2266b21095"
 version = "1.1.2"
