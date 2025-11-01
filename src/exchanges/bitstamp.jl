@@ -95,5 +95,12 @@ function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limi
     end
 end
 
+function Base.merge(a::BitstampCandle, b::BitstampCandle)
+    @assert a.timestamp == b.timestamp # hopefully, whoever is calling update can guarantee this, so I can get rid of this.
+    high = max(a.high, b.high)
+    low  = min(a.low, b.low)
+    return BitstampCandle(a.timestamp, a.open, high, low, b.close, b.volume)
+end
+
 export Bitstamp
 export BitstampCandle
