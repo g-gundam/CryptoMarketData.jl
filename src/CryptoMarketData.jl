@@ -44,17 +44,25 @@ include("exchanges/bitstamp.jl")           # DONE
 include("exchanges/bybit.jl")              # DONE
 include("exchanges/pancakeswap.jl")        # DONE
 
+## Exports
+
 # general functions
 export get_saved_markets
 
 # general functions that operate on exchanges
+# 1 implementation
 export save!
 export load
 export earliest_candle
 export get_candles_for_day
 export save_day!
 
+# general function that operates on exchange-specific candle types
+# 1 implementation
+export update!
+
 # functions with exchange-specific methods
+# many exchange-specific implementations
 export csv_headers
 export csv_select
 export ts2datetime_fn
@@ -64,6 +72,8 @@ export candles_max
 export get_markets
 export get_candles
 export subscribe
+# `Base.merge(a::C, b::C) where {C <: AbstractCandle} ` should be implemented too.
+#    (It's already exported by Julia, so there's no need to export here.)
 
 """
     get_markets(exchange)
@@ -152,7 +162,7 @@ function subscribe(uri::URI)
 end
 
 """
-$(SIGNATURES)
+$(TYPEDSIGNATURES)
 
 Return a DataFrame that lists the currently saved markets.
 
@@ -333,8 +343,7 @@ function earliest_candle(exchange::AbstractExchange, market; endday=today(tz"UTC
     # if not? there's a bug.
 end
 
-"""
-    get_candles_for_day(exchange, market, day::Date)
+"""$(TYPEDSIGNATURES)
 
 Fetch all of the 1m candles for the given exchange, market, and day.
 The vector and candles returned is just the right size to save to the archives.
@@ -422,9 +431,56 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
     end
 end
 
+"""$(TYPEDSIGNATURES)
+
+Destructively update a vector of `candles` with new `candle` data.
+One of 3 things can happen as a result of calling this function.
+
+1. Return `:first` if `candles` was previously empty.
+2. Return `:updated` if the timestamps are the same and update the last candle.
+3. Return `:new` if the timestamps are different and push the new candle.
+"""
+function update!(candles::AbstractVector{AbstractCandle}, candle::AbstractCandle)
+    last = if length(candles) > 0
+        candles[end]
+    else
+        nothing
+    end
+    if isnothing(last)
+        push!(candles, candle)
+        return :first
+    else
+        last_dt   = candle_datetime(last)
+        candle_dt = candle_datetime(candle)
+        if last_dt == candle_dt
+            updated_candle = merge(last, candle)
+            candles[end] = updated_candle
+            return :updated
+        else
+            push!(candles, candle)
+            return :new
+        end
+    end
+end
+
+## Generalized Documentation
+#    for methods with exchange-specific implementations:
+
+"""    Base.merge(a::C, b::C) where {C <: CryptoMarketData.AbstractCandle} -> C
+
+Every concrete candle type should implement a Base.merge method that will
+take the current candle `a` and a newer candle `b` with the same timestamp, and
+perform a merge such that high, low, and volume are updated as necessary.
+It should return a new candle with the merged data.
+
+(This will be used by code that consumes unfinished candle data from WebSockets.)
+"""
+Base.merge(a::AbstractCandle, b::AbstractCandle)
+
 end
 
 #=
+## REPL Snippets
 
 using CryptoMarketData
 using DataFrames
