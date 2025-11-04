@@ -76,20 +76,6 @@ export subscribe
 #    (It's already exported by Julia, so there's no need to export here.)
 
 """
-    get_markets(exchange)
-
-Fetch the available markets for the given exchange.
-
-# Example
-
-```julia-repl
-julia> bitstamp = Bitstamp()
-julia> markets = get_markets(bitstamp)
-```
-"""
-CryptoMarketData.get_markets(exchange)
-
-"""
     subscribe(url::String)
 
 This is a convenience method that accepts URLs as strings.
@@ -465,6 +451,41 @@ end
 
 ## Generalized Documentation
 #    for methods with exchange-specific implementations:
+
+"""
+    csv_headers(exchange::AbstractExchange) -> Vector{Symbol}
+
+Return headings for each column of candle data.
+
+# Example
+
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> columns = csv_headers(bitstamp)
+6-element Vector{Symbol}:
+ :ts
+ :o
+ :h
+ :l
+ :c
+ :v
+```
+"""
+csv_headers(exchange)
+
+"""
+    get_markets(exchange) -> Vector{String}
+
+Fetch the available markets for the given exchange.
+
+# Example
+
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> markets = get_markets(bitstamp)
+```
+"""
+CryptoMarketData.get_markets(exchange)
 
 """    Base.merge(a::C, b::C) where {C <: CryptoMarketData.AbstractCandle} -> C
 
