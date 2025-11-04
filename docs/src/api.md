@@ -57,7 +57,7 @@ save_day!
 
 ### Exchange Specific Implementations
 
-- csv_headers
+- [`csv_headers`](@ref)
 - csv_select
 - ts2datetime_fn
 - short_name
@@ -67,6 +67,10 @@ save_day!
 - [`subscribe`](@ref)
 - [`update!`](@ref)
 - [`Base.merge`](@ref)
+
+```@docs
+csv_headers
+```
 
 ```@docs
 get_markets
