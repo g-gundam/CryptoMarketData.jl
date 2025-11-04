@@ -65,15 +65,24 @@ save_day!
 - [`get_markets`](@ref)
 - get_candles
 - [`subscribe`](@ref)
+- [`update!`](@ref)
+- [`Base.merge`](@ref)
 
 ```@docs
 get_markets
 ```
 
 ```@docs
-subscribe
+update!
 ```
 
+```@docs
+Base.merge
+```
+
+```@docs
+subscribe
+```
 ## Select
 
 This was originally [NHDaly/Select.jl](https://github.com/NHDaly/Select.jl), but because it wasn't
