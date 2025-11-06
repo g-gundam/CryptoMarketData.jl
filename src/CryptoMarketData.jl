@@ -72,7 +72,7 @@ export candles_max
 export get_markets
 export get_candles
 export subscribe
-# `Base.merge(a::C, b::C) where {C <: AbstractCandle} ` should be implemented too.
+# `Base.merge(a::C, b::C) where {C <: AbstractCandle}` should be implemented too.
 #    (It's already exported by Julia, so there's no need to export here.)
 
 """
