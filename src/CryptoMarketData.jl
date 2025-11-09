@@ -426,7 +426,7 @@ One of 3 things can happen as a result of calling this function.
 2. Return `:updated` if the timestamps are the same and update the last candle.
 3. Return `:new` if the timestamps are different and push the new candle.
 """
-function update!(candles::AbstractVector{AbstractCandle}, candle::AbstractCandle)
+function update!(candles::AbstractVector{<: AbstractCandle}, candle::AbstractCandle)
     last = if length(candles) > 0
         candles[end]
     else
