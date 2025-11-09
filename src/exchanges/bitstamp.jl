@@ -5,7 +5,7 @@ BITSTAMP_API = "https://www.bitstamp.net"
 end
 
 @kwdef struct BitstampCandle <: AbstractCandle
-    timestamp::UInt64
+    timestamp::UInt64 # unix seconds
     open::Union{Float64,Missing}
     high::Union{Float64,Missing}
     low::Union{Float64,Missing}
