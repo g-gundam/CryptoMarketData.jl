@@ -18,7 +18,7 @@ end
     v2::Float64
 end
 
-function candle_type(bitget::BitGet)
+function candle_type(bitget::Bitget)
     BitgetCandle
 end
 
