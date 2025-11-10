@@ -348,7 +348,8 @@ function get_candles_for_day(exchange::AbstractExchange, market, day::Date)
     limit = candles_max(exchange)    # tf exists to get around a special case for binance
     n_reqs = convert(Int64, ceil(1440 / limit)) # number of requests
     l_preq = convert(Int64, 1440 / n_reqs)      # limit per request
-    candles = []
+    Type = candle_type(exchange)
+    candles = Vector{Type}()
     current_ts = DateTime(day)
     stop_ts = current_ts + Dates.Minute(l_preq - 1)
     for _ in 1:n_reqs
