@@ -18,11 +18,15 @@ end
     v2::Float64
 end
 
-function csv_headers(Bitget::Bitget)
+function candle_type(bitget::BitGet)
+    BitgetCandle
+end
+
+function csv_headers(bitget::Bitget)
     collect(fieldnames(BitgetCandle))
 end
 
-function csv_select(Bitget::Bitget)
+function csv_select(bitget::Bitget)
     1:6
 end
 

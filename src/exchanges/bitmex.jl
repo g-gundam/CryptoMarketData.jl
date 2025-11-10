@@ -52,6 +52,10 @@ end
 #
 # This leads to subtraction and addition of 1 minute at key points.
 
+function candle_type(bitmex::Bitmex)
+    BitmexCandle
+end
+
 function csv_headers(bitmex::Bitmex)
     [:ts, :symbol, :o, :h, :l, :c, :trades, :v, :vwap, :lastSize, :turnOver, :homeNotional, :foreignNotional]
 end

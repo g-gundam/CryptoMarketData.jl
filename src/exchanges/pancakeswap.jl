@@ -20,6 +20,10 @@ end
     ignore::Float64
 end
 
+function candle_type(pancakeswap::PancakeSwap)
+    PancakeSwapCandle
+end
+
 function csv_headers(pancakeswap::PancakeSwap)
     collect(fieldnames(PancakeSwapCandle))
 end

@@ -31,6 +31,10 @@ function Base.getproperty(c::BitstampCandle, s::Symbol)
     end
 end
 
+function candle_type(bitstamp::Bitstamp)
+    BitstampCandle
+end
+
 function csv_headers(bitstamp::Bitstamp)
     [:ts, :o, :h, :l, :c, :v]
 end

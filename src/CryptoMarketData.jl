@@ -72,6 +72,7 @@ export update!
 
 # functions with exchange-specific methods
 # many exchange-specific implementations
+export candle_type
 export csv_headers
 export csv_select
 export ts2datetime_fn

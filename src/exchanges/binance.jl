@@ -20,6 +20,10 @@ end
     ignore::Float64
 end
 
+function candle_type(binance::Binance)
+    BinanceCandle
+end
+
 function csv_headers(binance::Binance)
     collect(fieldnames(BinanceCandle))
 end

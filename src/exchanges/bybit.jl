@@ -18,6 +18,10 @@ end
     v2::Float64
 end
 
+function candle_type(bybit::Bybit)
+    BybitCandle
+end
+
 function csv_headers(bybit::Bybit)
     collect(fieldnames(BybitCandle)) # https://discourse.julialang.org/t/convert-tuple-to-array/2147/6
 end
