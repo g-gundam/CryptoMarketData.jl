@@ -18,6 +18,12 @@ using Chain
 abstract type AbstractExchange end
 abstract type AbstractCandle end
 
+# I want to introduce the concept of storage
+# instead of hardcoding file-based CSV data for storage.
+# It will be a slow introduction though.
+# I don't feel ready to do a major refactor yet.
+abstract type AbstractStorage end
+
 # This is used to contain WebSocket sessions and interact with them.
 # It's generic and can be used for any exchange.
 @kwdef mutable struct Session
@@ -43,6 +49,9 @@ include("exchanges/bitmex.jl")             # DONE
 include("exchanges/bitstamp.jl")           # DONE
 include("exchanges/bybit.jl")              # DONE
 include("exchanges/pancakeswap.jl")        # DONE
+
+# storage strutures and methods
+include("storage/csv.jl")
 
 ## Exports
 
