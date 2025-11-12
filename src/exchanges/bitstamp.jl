@@ -1,7 +1,9 @@
 BITSTAMP_API = "https://www.bitstamp.net"
+BITSTAMP_WS_API = "wss://ws.bitstamp.net"
 
 @kwdef struct Bitstamp <: AbstractExchange
     base_url::AbstractString = BITSTAMP_API
+    ws_url::AbstractString = BITSTAMP_WS_API
 end
 
 @kwdef struct BitstampCandle <: AbstractCandle
