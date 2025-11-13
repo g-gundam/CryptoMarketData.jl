@@ -101,11 +101,71 @@ function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limi
     end
 end
 
+# For Bitstamp, this won't get used, because their websocket doesn't give me candles
+# -- just price and amount.
+# I might get rid of it, but it's a good example for exchanges whose websockets
+# do give me unfinished candles.
 function Base.merge(a::BitstampCandle, b::BitstampCandle)
     @assert a.timestamp == b.timestamp # hopefully, whoever is calling update can guarantee this, so I can get rid of this.
     high = max(a.high, b.high)
     low  = min(a.low, b.low)
     return BitstampCandle(a.timestamp, a.open, high, low, b.close, b.volume)
+end
+
+# a is the last candle
+# b is the new data
+# return an updated candle if a and be are in the same tf
+# or return a new candle if a and b are in different tfs
+function Base.merge(a::BitstampCandle, b::Dict{String, Any}; tf=Minute(1))
+    price  = b["data"]["price"]
+    amount = b["data"]["amount"]
+    b_ts   = parse(UInt64, b["data"]["timestamp"])
+    b_dt   = DateTime(unixseconds2nanodate(b_ts))
+    b_ts2  = floor(b_dt, tf)
+    a_ts2  = DateTime(candle_datetime(a))
+    if a_ts2 == b_ts2
+        # update candle
+        return BitstampCandle(
+            timestamp=a.timestamp,
+            open=a.open,
+            high=max(a.high, price),
+            low=min(a.low, price),
+            close=price,
+            volume=a.volume + amount
+        )
+    else
+        # new candle
+        b_nd2 = NanoDate(b_ts2)
+        ts    = nanodate2unixseconds(b_nd2)
+        return BitstampCandle(
+            timestamp=ts,
+            open=price,
+            high=price,
+            low=price,
+            close=price,
+            volume=amount
+        )
+    end
+end
+
+# When there is no initial candle, pass the desired type so we can dispatch to this function
+# to create the initial candle.
+function Base.merge(a::Type{BitstampCandle}, b::Dict{String, Any}; tf=Minute(1))
+    price  = b["data"]["price"]
+    amount = b["data"]["amount"]
+    b_ts   = parse(UInt64, b["data"]["timestamp"])
+    b_dt   = DateTime(unixseconds2nanodate(b_ts))
+    b_ts2  = floor(b_dt, tf)
+    b_nd2  = NanoDate(b_ts2)
+    ts     = nanodate2unixseconds(b_nd2)
+    return BitstampCandle(
+        timestamp=ts,
+        open=price,
+        high=price,
+        low=price,
+        close=price,
+        volume=amount
+    )
 end
 
 export Bitstamp
