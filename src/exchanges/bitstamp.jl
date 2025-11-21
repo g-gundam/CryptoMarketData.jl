@@ -101,6 +101,10 @@ function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limi
     end
 end
 
+function ws_uri(bitstamp::Bitstamp)
+    URI(bitstamp.ws_url)
+end
+
 # For Bitstamp, this won't get used, because their websocket doesn't give me candles
 # -- just price and amount.
 # I might get rid of it, but it's a good example for exchanges whose websockets
