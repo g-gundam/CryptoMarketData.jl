@@ -33,6 +33,10 @@ function Base.getproperty(c::BitstampCandle, s::Symbol)
     end
 end
 
+function Base.convert(::Type{BitstampCandle}, row::DataFrameRow)
+    BitstampCandle(nanodate2unixseconds(NanoDate(row.ts)), row.o, row.h, row.l, row.c, row.v)
+end
+
 function candle_type(bitstamp::Bitstamp)
     BitstampCandle
 end
