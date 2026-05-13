@@ -417,40 +417,55 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
                 out_of_range = true
                 # @info "replacement for missing b" b size(cfs)
             end
-            cfs = cfs[range(a, b)]
+            if !ismissing(a)
+                cfs = cfs[range(a, b)]
+            else
+                cfs = missing
+            end
         end
     end
     res = missing
     headers = csv_headers(exchange)
     select = csv_select(exchange)
     #csv_read = (cf) -> CSV.read(cf, table; headers=headers, select=select, skipto=2)
-    for cf in cfs
-        csv = CSV.read(cf, table; header=headers, select=select, skipto=2)
-        csv[!, :ts] = map(ts2datetime_fn(exchange), csv[!, :ts])
-        if ismissing(res)
-            res = csv
-        else
-            append!(res, csv)
+    if !ismissing(cfs)
+        for cf in cfs
+            csv = CSV.read(cf, table; header=headers, select=select, skipto=2)
+            csv[!, :ts] = map(ts2datetime_fn(exchange), csv[!, :ts])
+            if ismissing(res)
+                res = csv
+            else
+                append!(res, csv)
+            end
         end
     end
 
     # fill in gaps in local storage with remotely fetched data
     if remote && out_of_range
-        # load_remote
-        # - get the last day from local storage
-        # - fetch until span.stop
-        last_ts = res[end, :ts]
-        last_day = Date(floor(last_ts, Day))
-        remote_span = last_day:span.stop
-        rcs = load_remote(exchange, market; span=remote_span)
-        # - skip candles already in the dataframe
-        i = 1
-        while candle_datetime(rcs[i]) <= last_ts && i < length(rcs)
-            i += 1
-        end
-        # - push the remaining candles on to the dataframe
-        for j in i:length(rcs)
-            push!(res, convert(NamedTuple, rcs[j]))
+        if ismissing(res)
+            # full remote
+            res = DataFrame()
+            rcs = load_remote(exchange, market; span)
+            for j in 1:length(rcs)
+                push!(res, convert(NamedTuple, rcs[j]))
+            end
+        else
+            # partial load_remote
+            # - get the last day from local storage
+            # - fetch until span.stop
+            last_ts = res[end, :ts]
+            last_day = Date(floor(last_ts, Day))
+            remote_span = last_day:span.stop
+            rcs = load_remote(exchange, market; span=remote_span)
+            # - skip candles already in the dataframe
+            i = 1
+            while candle_datetime(rcs[i]) <= last_ts && i < length(rcs)
+                i += 1
+            end
+            # - push the remaining candles on to the dataframe
+            for j in i:length(rcs)
+                push!(res, convert(NamedTuple, rcs[j]))
+            end
         end
     end
 
