@@ -1,3 +1,5 @@
+using Visor
+
 """$(TYPEDSIGNATURES)
 
 This Visor.Process is responsible for connecting to an exchange's webscoket
@@ -72,9 +74,11 @@ function command_process(td::Visor.Process, s::Session)
         if isshutdown(msg)
             break
         elseif isa(msg, AbstractCandle)
+            # update s.candles
             res = CryptoMarketData.update!(s.candles, msg)
+            # publish to s.new_candle upon candle completion
             if res == :new
-                ses.new_candle[] = s.candles[end-1]
+                s.new_candle[] = s.candles[end-1]
             end
         elseif isa(msg, Tuple)
             if msg[1] == :subscribe
