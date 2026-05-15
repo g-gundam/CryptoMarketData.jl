@@ -100,3 +100,133 @@ function command_process(td::Visor.Process, s::Session)
     end
 end
 
+## INFO: From here on down is the public API.
+
+"""$(TYPEDSIGNATURES)
+
+This initiates a websocket connection with an `exchange`, and subscribes to the given `market`.
+It also creates a supervision tree using Visor.jl that tries very hard to keep websocket connections alive.
+
+# Example
+```julia-repl
+julia> bitstamp = Bitstamp()
+julia> ses = start(bitstamp, "BTCUSD")
+```
+"""
+function start(exchange::AbstractExchange, market::AbstractString; wait::Bool=false)
+    ctype = candle_type(exchange)
+    candles = Vector{ctype}()
+    new_candle = Observable{AbstractCandle}()
+    last_candle = candle_type(exchange)
+    session = Session(exchange, market, candles, new_candle, last_candle, missing, missing, missing)
+    procs = [
+        process(accumulator_process, args=(session,)),
+        process(command_process, args=(session,))
+    ]
+    session.supervisor = supervisor("$(string(typeof(exchange))).$market", procs; intensity=1, period=5)
+    # Add the ws_process *AFTER* session.supervisor is set.
+    procs2 = [process(ws_process; args=(session,), debounce_time=1.5, restart=:permanent), session.supervisor]
+    session.supervisor_ws = supervisor("$(string(typeof(exchange))).$market.ws", procs2; intensity=5, period=5)
+    if !wait
+        supervise(procs2; wait=false)
+    end
+    session
+end
+
+"""$(TYPEDSIGNATURES)
+
+Feed a channel with candles.
+Once the candles are up to date with the present, start observing `session.new_candles`,
+and feed those into the given channel as they come.
+"""
+function feed(session::Session, ch::Channel, from::Date, live::Observable)
+    tday = today(tz"UTC")
+    span = from:tday
+    CandleType = candle_type(session.exchange)
+    # load initial candles into channel
+    initial_candles = load(session.exchange, session.market; span, remote=true)
+    @info :feed note="initial_candles" size(initial_candles)
+    # put all but last candle into ch
+    for row in eachrow(initial_candles)[begin:end-1]
+        c = convert(CandleType, row)
+        put!(ch, c)
+    end
+    # after that's done, fill in any gap between the last inserted candle and the most recent available
+    # - What time is it now?
+    t_now = floor(now(tz"UTC").utc_datetime, Minute)
+    # - What time is the last candle we have?
+    t_last = initial_candles[end, :ts]
+    # - is there a gap?
+    # - if so fetch again
+    # - and fill the gap
+    if (t_now - t_last > Second(60))
+        secondary_candles = load(session.exchange, session.market; span=tday:tday, remote=true)
+        # DONE: skip forward
+        a = findfirst(==(t_last), secondary_candles.ts)
+        @info :feed note="secondary_candles" size(secondary_candles) a
+        for row in eachrow(secondary_candles)[a:end-1]
+            # DONE: push candles to fill the gap
+            c = convert(CandleType, row)
+            put!(ch, c)
+        end
+    end
+
+    # DONE: once caught up, setup an observer on session.new_candle
+    @info :feed note="observe"
+    live[] = on(session.new_candle) do c
+        put!(ch, c)
+    end
+end
+
+"""$(TYPEDSIGNATURES)
+
+Observe the current session for new candles and publish them to `ch`.
+
+# Example
+```julia-repl
+julia> (ch, observer) = observe(session, preload(session, Date("2026-05-05")))
+```
+"""
+function observe(session::Session, ch::Channel)
+    observer = on(session.new_candle) do candle
+        t = @task put!(ch, candle)
+        schedule(t)
+    end
+    return (ch, observer)
+end
+
+"""$(TYPEDSIGNATURES)
+
+Create a channel and synchronously preload it with candles from the given date.
+This is for warming up a trading strategy.
+"""
+function preload(session, from::Date=(today(tz"UTC") - Day(1)))
+    CandleType = candle_type(session.exchange)
+    ch = Channel{CandleType}(60)
+    live = Observable{Observable}()
+    t = @task feed(session, ch, from, live)
+    schedule(t)
+    return (ch, t, live)
+end
+
+"""$(TYPEDSIGNATURES)
+
+Close the session's websocket and shut down all of its supervised processes.
+
+# Example
+```julia-repl
+julia> stop(ses)
+```
+"""
+function stop(session::Session)
+    wsp = Visor.from_name(session.supervisor_ws, "ws_process")
+    shutdown(session.supervisor)
+    close(session.ws)
+    shutdown(wsp)
+    # If my timing is lucky, I get a clean shutdown.
+    # Unlucky timing is still very possible in which case I still
+    # get big ugly strack traces.  I want to get it perfect,
+    # but it's not the most important thing right now.
+
+    #shutdown(session.supervisor_ws)
+end

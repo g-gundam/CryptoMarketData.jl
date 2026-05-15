@@ -65,6 +65,11 @@ include("websockets.jl")
 # general functions
 export get_saved_markets
 
+# websocket functions
+export start
+export stop
+export preload
+
 # general functions that operate on exchanges
 # 1 implementation
 export save!
@@ -90,8 +95,8 @@ export candles_max
 export get_markets
 export get_candles
 export ws_uri
-export subscribe # XXX: This is getting replaced with something based on Visor.
-                 # I may change the name, too.
+export ws_subscribe_commands
+export ws_handle_message
 
 # `Base.merge(a::C, b::C) where {C <: AbstractCandle}` should be implemented too.
 #    (It's already exported by Julia, so there's no need to export here.)
