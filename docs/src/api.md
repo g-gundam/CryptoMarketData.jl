@@ -17,6 +17,12 @@ Every exchange is a subtype of AbstractExchange.
 Every exchange also has a matching candle type that's a subtype of AbstractCandle.
 Its purpose is to capture the data given to us by the exchange.
 
+### Session
+
+This contains the data needed for a persistent connection to an exchange's WebSocket API.
+Through this, one can start and stop a WebSocket connection.  The connection will also
+be supervised and automatically restarted if prematurely disconnected.
+
 ## Functions
 
 ### General Functions
