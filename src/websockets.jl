@@ -59,3 +59,43 @@ function accumulator_process(td::Visor.Process, s::Session)
     @info :ax note="Shutting down"
     # All I want to do is turn JSON into a candle and send it over to commander.
 end
+
+"""$(TYPEDSIGNATURES)
+
+This Visor.Process is the main command loop that users of the session will
+interact with. It also receives messages from `candle_process` whenever it
+completes a candle.
+"""
+function command_process(td::Visor.Process, s::Session)
+    for msg in td.inbox
+        @info :command msg
+        if isshutdown(msg)
+            break
+        elseif isa(msg, AbstractCandle)
+            res = CryptoMarketData.update!(s.candles, msg)
+            if res == :new
+                ses.new_candle[] = s.candles[end-1]
+            end
+        elseif isa(msg, Tuple)
+            if msg[1] == :subscribe
+                list = ws_subscribe_commands(s.exchange, s.market)
+                for cmd in list
+                    @info :command note="sending to ws" cmd
+                    WebSockets.send(s.ws, cmd)
+                end
+            else
+                @warn :command note="Unrecognized tuple format" msg
+            end
+        elseif isa(msg, Visor.Request)
+            @info :command note="call" msg
+            type = candle_type(s.exchange)
+            ch = Channel{type}(60)
+            put!(msg.inbox, ch)
+            for c in s.candles
+                put!(ch, c)
+            end
+        else
+            @info :command note="unrecognized" msg
+        end
+    end
+end
