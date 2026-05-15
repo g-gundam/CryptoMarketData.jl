@@ -6,6 +6,7 @@ Manifest*
 /docs/build/
 /data/
 src/scratch.jl
+debug.log
 
 .*.~undo-tree~
 .dir-locals.*
