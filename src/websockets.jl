@@ -53,7 +53,7 @@ function accumulator_process(td::Visor.Process, s::Session)
             break
         else
             # INFO: Refactored exchange-specific code into its own method.
-            handle_ws(s.exchange, s, msg)
+            ws_handle_message(s.exchange, s, msg)
         end
     end
     @info :ax note="Shutting down"
@@ -99,3 +99,4 @@ function command_process(td::Visor.Process, s::Session)
         end
     end
 end
+

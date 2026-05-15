@@ -114,6 +114,46 @@ function ws_uri(bitstamp::Bitstamp)
     URI(bitstamp.ws_url)
 end
 
+"""$(TYPEDSIGNATURES)
+
+Return a vector of JSON commands to send to an exchange's WebSocket API.
+"""
+function ws_subscribe_commands(bitstamp::Bitstamp, market::AbstractString)
+    map(
+        JSON3.write,
+        [Dict(:event => "bts:subscribe", :data => Dict(:channel => "live_trades_$(lowercase(market))"))]
+    )
+end
+
+"""$(TYPEDSIGNATURES)
+
+While inside `accumulator_process`, handle a websocket message from the exchange.
+The main job of this function is to send candles to commander_process.
+Secondary jobs may include acknowleding successful subscriptions
+or handling reconnect requests.
+"""
+function ws_handle_message(bitstamp::Bitstamp, s::Session, msg::AbstractString)
+    data = JSON3.read(msg)
+    commander = Visor.from_name(s.supervisor, "command_process")
+    if haskey(data, "event")
+        if data["event"] == "trade"
+            new_candle = merge(s.last_candle, data)
+            cast(commander, new_candle)
+            s.last_candle = new_candle # I forgot to do this in main.jl (aka take2).
+        elseif data["event"] == "bts:subscription_succeeded"
+            @info :ax note="subscription succeeded"
+        elseif data["event"] == "bts:request_reconnect"
+            @info :ax note="bts:request_reconnect"
+            close(s.ws)
+            # Visor.jl should restart things.
+        else
+            @warn :ax note="unknown message type" data["event"]
+        end
+    else
+        @warn :ax note="data has no 'event' key." data
+    end
+end
+
 ## This is used by CryptoMarketData.update! and every exchange should implement this for their candle type.
 
 function Base.merge(a::BitstampCandle, b::BitstampCandle)
