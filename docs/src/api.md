@@ -68,7 +68,6 @@ save_day!
 - candles_max
 - [`get_markets`](@ref)
 - get_candles
-- [`subscribe`](@ref)
 - [`update!`](@ref)
 - [`Base.merge`](@ref)
 
@@ -86,10 +85,6 @@ update!
 
 ```@docs
 Base.merge
-```
-
-```@docs
-subscribe
 ```
 
 ### Other
