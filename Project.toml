@@ -1,7 +1,7 @@
 name = "CryptoMarketData"
 uuid = "57973c84-8724-49d2-9af5-7f2266b21095"
-authors = ["contributors"]
 version = "1.1.2"
+authors = ["contributors"]
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -14,6 +14,7 @@ HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 NanoDates = "46f1a544-deae-4307-8689-c12aa3c955c6"
 Nullables = "4d1e1d77-625e-5b40-9113-a560ec7a8ecd"
+Observables = "510215fc-4207-5dde-b226-833fc4488ee2"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 TidyTest = "ef104744-fcb3-4e7e-8bb2-6e95860d81ed"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
@@ -30,6 +31,7 @@ HTTP = "0.8, 1"
 JSON3 = "1"
 NanoDates = "0.3, 1"
 Nullables = "1"
+Observables = "0.5.5"
 TidyTest = "0.1"
 TimeZones = "1"
 URIs = "1"
