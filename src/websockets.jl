@@ -36,3 +36,26 @@ function ws_process(td::Visor.Process, s::Session)
     end
     @info :ws note="the end"
 end
+
+"""$(TYPEDSIGNATURES)
+
+This Visor.Process's job is to accumulate price data into finished candles and
+send them to the `command_process`.
+"""
+function accumulator_process(td::Visor.Process, s::Session)
+    # Initial candle starts as the type,
+    # because Base.merge methods will dispatch on last_candle to do the right thing.
+    last_candle = s.last_candle = candle_type(s.exchange)
+    commander = Visor.from_name(s.supervisor, "command_process")
+    for msg in td.inbox
+        @debug :ax msg
+        if isshutdown(msg)
+            break
+        else
+            # INFO: Refactored exchange-specific code into its own method.
+            handle_ws(s.exchange, s, msg)
+        end
+    end
+    @info :ax note="Shutting down"
+    # All I want to do is turn JSON into a candle and send it over to commander.
+end
