@@ -14,6 +14,7 @@ using CSV
 using DataFrames
 using Chain
 using Visor
+using Observables
 
 # Every exchange implements its own subtype of these.
 abstract type AbstractExchange end
