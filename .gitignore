@@ -5,6 +5,7 @@ Manifest*
 /docs/Manifest.toml
 /docs/build/
 /data/
+src/scratch.jl
 
 .*.~undo-tree~
 .dir-locals.*
