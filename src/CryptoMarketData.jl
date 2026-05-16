@@ -62,6 +62,11 @@ include("websockets.jl")
 
 ## Exports
 
+# types
+export AbstractExchange
+export AbstractCandle
+export Session
+
 # general functions
 export get_saved_markets
 
