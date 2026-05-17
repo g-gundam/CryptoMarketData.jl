@@ -21,17 +21,21 @@ A library for saving and loading OHLCV candle data from cryptocurrency exchanges
 2.  **After saving, be able to load that data into a DataFrame.**
     + 1m candles are the default.
     + Other arbitrary timeframes should be supported.
+3.  **Be able to subscribe to WebSocket APIs and publish finished 1 minute candles to a `Channel`.**
+    + WebSocket connections should be supervised and automatically reconnected.
+    + Data subscriptions should also be automatically renewed on reconnection.
 
 ## Exchanges
 
-| Name        | Status           |
-|-------------|------------------|
-| Binance     | Work in Progress |
-| Bitget      | Slightly Broken  |
-| Bitmex      | Done             |
-| Bitstamp    | Done             |
-| Bybit       | Done             |
-| PancakeSwap | Done             |
+| Name        | Candle Archival  | WebSockets  |
+|-------------|------------------|-------------|
+| Binance     | Work in Progress | Not Started |
+| Bitget      | Slightly Broken  | Not Started |
+| Bitmex      | Done             | Not Started |
+| Bitstamp    | Done             | Done        |
+| Bybit       | Done             | Not Started |
+| Kraken      | Not Started      | Not Started |
+| PancakeSwap | Done             | Not Started |
 
 ## Examples
 
