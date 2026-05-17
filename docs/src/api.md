@@ -78,6 +78,54 @@ get_candles_for_day
 save_day!
 ```
 
+### WebSocket Functions
+
+The following 3 functions are the main ways one interacts with WebSockets through this system.
+
+- [`start`](@ref)
+- [`stop`](@ref)
+- [`preload`](@ref)
+
+```@docs
+start
+```
+
+```@docs
+stop
+```
+
+```@docs
+preload
+```
+
+The following functions support the above, but a user of this library probably never needs to call them.  Nevertheless, they're documented here for completeness.
+
+- [`observe`](@ref)
+- [`feed`](@ref)
+- [`ws_process`](@ref) 
+- [`accumulator_process`](@ref)
+- [`command_process`](@ref)
+
+```@docs
+observe
+```
+
+```@docs
+feed
+```
+
+```@docs
+ws_process
+```
+
+```@docs
+accumulator_process
+```
+
+```@docs
+command_process
+```
+
 ### Exchange Specific Implementations
 
 - [`csv_headers`](@ref)
@@ -88,6 +136,9 @@ save_day!
 - [`get_markets`](@ref)
 - get_candles
 - [`update!`](@ref)
+- [`ws_handle_message`](@ref)
+- [`ws_subscribe_commands`](@ref)
+- [`ws_uri`](@ref)
 - [`Base.merge`](@ref)
 
 ```@docs
@@ -100,6 +151,18 @@ get_markets
 
 ```@docs
 update!
+```
+
+```@docs
+ws_handle_message
+```
+
+```@docs
+ws_subscribe_commands
+```
+
+```@docs
+ws_uri
 ```
 
 ```@docs
