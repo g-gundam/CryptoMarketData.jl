@@ -23,12 +23,12 @@ A library for saving and loading OHLCV candle data from cryptocurrency exchanges
 
 ## Exchanges
 
-| Name        | Status           |
-|-------------|------------------|
-| Binance     | Work in Progress |
-| Bitget      | Slightly Broken  |
-| Bitmex      | Done             |
-| Bitstamp    | Done             |
-| Bybit       | Done             |
-| PancakeSwap | Done             |
-
+| Name        | Candle Archival  | WebSockets  |
+|-------------|------------------|-------------|
+| Binance     | Work in Progress | Not Started |
+| Bitget      | Slightly Broken  | Not Started |
+| Bitmex      | Done             | Not Started |
+| Bitstamp    | Done             | Done        |
+| Bybit       | Done             | Not Started |
+| Kraken      | Not Started      | Not Started |
+| PancakeSwap | Done             | Not Started |
