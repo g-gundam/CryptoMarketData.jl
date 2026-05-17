@@ -23,6 +23,19 @@ This contains the data needed for a persistent connection to an exchange's WebSo
 Through this, one can start and stop a WebSocket connection.  The connection will also
 be supervised and automatically restarted if prematurely disconnected.
 
+```julia
+@kwdef mutable struct Session
+    exchange::AbstractExchange
+    market::AbstractString
+    candles::Vector{<: AbstractCandle}
+    new_candle::Observable
+    last_candle::Any # Union{Missing, DataType, AbstractCandle}
+    ws::Union{Missing, HTTP.WebSockets.WebSocket}
+    supervisor::Union{Missing, Visor.Supervisor}
+    supervisor_ws::Union{Missing, Visor.Supervisor}
+end
+```
+
 ## Functions
 
 ### General Functions
