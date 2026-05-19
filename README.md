@@ -44,7 +44,7 @@ A library for saving and loading OHLCV candle data from cryptocurrency exchanges
 This is the most basic thing you can do with this library.
 
 ```julia-repl
-julia> using CryptoMarketData
+julia> using CryptoMarketData, Dates
 
 julia> bitstamp = Bitstamp()
 Bitstamp("https://www.bitstamp.net")
@@ -84,6 +84,9 @@ julia> btcusd = load(bitstamp, "BTC/USD");
 ### Stream Finished Candles
 
 Stream finished 1m candles from a websocket.
+
+1. Start a webscoket connection with `start(exchange, market)`.
+2. Request a channel of candles with `stream(session, from)`.
 
 ``` julia
 """
