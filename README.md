@@ -108,7 +108,12 @@ julia> (ch, t, o) = stream(ses);
 julia> tc = @task consumer(ch)
 Task (runnable) @0x0000749ede937490
 
-# Stop the task.
+# After the initial dump of candles,
+# near the beginning of every new minute,
+# the finished candle from the previous minute should be printed.
+julia> schedule(tc)
+
+# Stop the consumer task.
 julia> schedule(tc, InterruptException(); error=true);
 
 # Stop the supervised websocket connection.
