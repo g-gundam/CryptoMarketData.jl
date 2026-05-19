@@ -203,12 +203,16 @@ end
 """$(TYPEDSIGNATURES)
 
 Stream finished 1 minute candles for a market from an exchange.
-(A finished candle is one that will no longer change, because the
-minute it represents is in the past.)  This function returns
-a tuple containing a channel that the candles will be published to.
-The tuple also contains the task that preloads the channel with
-past data and the observer that watches for candles to finish
-before publishing.
+A finished candle is one that will no longer change, because the
+minute it represents is in the past.  Candles from the past as
+specified by the `from` parameter are also published to the channel
+before switching to websockets.
+
+# Notes
+- The returned channel is what will be interacted with the most.
+- The task is the async process that loads the initial candles into the channel and switches to publishing from websockets afterward.
+- The observer is what waits for a candle to finish before publishing.
+- The task and observer are returned for the sake of completeness, but they're rarely interacted with directly.
 
 # Example
 ```julia-repl
