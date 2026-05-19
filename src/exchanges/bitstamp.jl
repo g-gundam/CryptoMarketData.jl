@@ -134,7 +134,7 @@ end
 
 While inside `accumulator_process`, handle a websocket message from the exchange.
 The main job of this function is to send candles to commander_process.
-Secondary jobs may include acknowleding successful subscriptions
+Secondary jobs may include acknowledging successful subscriptions
 or handling reconnect requests.
 """
 function ws_handle_message(bitstamp::Bitstamp, s::Session, msg::AbstractString)
