@@ -57,23 +57,60 @@ julia> markets = get_markets(bitstamp); markets[1:5]
  "BTC/PAX"
  "GBP/USD"
 
+julia> ENV["JULIA_DEBUG"] = "CryptoMarketData"
+"CryptoMarketData"
+
 julia> save!(bitstamp, "BTC/USD"; endday=Date("2011-08-25"))
-┌ Info: 2011-08-18
+┌ Debug: 2011-08-18
 └   length(cs) = 683
-┌ Info: 2011-08-19
+┌ Debug: 2011-08-19
 └   length(cs) = 1440
-┌ Info: 2011-08-20
+┌ Debug: 2011-08-20
 └   length(cs) = 1440
-┌ Info: 2011-08-21
+┌ Debug: 2011-08-21
 └   length(cs) = 1440
-┌ Info: 2011-08-22
+┌ Debug: 2011-08-22
 └   length(cs) = 1440
-┌ Info: 2011-08-23
+┌ Debug: 2011-08-23
 └   length(cs) = 1440
-┌ Info: 2011-08-24
+┌ Debug: 2011-08-24
 └   length(cs) = 1440
-┌ Info: 2011-08-25
+┌ Debug: 2011-08-25
 └   length(cs) = 1440
 
-julia> btcusd = load(bitstamp, "BTC/USD")
+julia> btcusd = load(bitstamp, "BTC/USD");
+```
+
+### Stream Finished Candles
+
+Stream finished 1m candles from a websocket.
+
+``` julia
+"""
+Print finished candles from `ch` as they come.
+"""
+function consumer(ch)
+    while true
+        candle = take!(ch)
+        print(now(), " ", candle, "\n")
+    end
+end
+```
+
+``` julia-repl
+# Start a supervised websocket connection.
+julia> ses = start(bitstamp, "BTC/USD");
+
+# Request a channel of candles.
+julia> (ch, t, o) = stream(ses);
+
+# Start a task that consumes from `ch`.
+julia> tc = @task consumer(ch)
+Task (runnable) @0x0000749ede937490
+
+# Stop the task.
+julia> schedule(tc, InterruptException(); error=true);
+
+# Stop the supervised websocket connection.
+julia> stop(ses);
 ```
