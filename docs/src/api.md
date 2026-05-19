@@ -84,7 +84,7 @@ The following 3 functions are the main ways one interacts with WebSockets throug
 
 - [`start`](@ref)
 - [`stop`](@ref)
-- [`preload`](@ref)
+- [`stream`](@ref)
 
 ```@docs
 start
@@ -95,7 +95,7 @@ stop
 ```
 
 ```@docs
-preload
+stream
 ```
 
 The following functions support the above, but a user of this library probably never needs to call them.  Nevertheless, they're documented here for completeness.
