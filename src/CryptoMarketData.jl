@@ -72,8 +72,8 @@ export get_saved_markets
 
 # websocket functions
 export start
+export stream
 export stop
-export preload
 
 # general functions that operate on exchanges
 # 1 implementation

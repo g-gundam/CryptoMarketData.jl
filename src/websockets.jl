@@ -113,8 +113,9 @@ It also creates a supervision tree using Visor.jl that tries very hard to keep w
 
 # Example
 ```julia-repl
-julia> bitstamp = Bitstamp()
-julia> ses = start(bitstamp, "BTCUSD")
+julia> bitstamp = Bitstamp();
+
+julia> ses = start(bitstamp, "BTCUSD");
 ```
 """
 function start(exchange::AbstractExchange, market::AbstractString; wait::Bool=false)
@@ -201,10 +202,24 @@ end
 
 """$(TYPEDSIGNATURES)
 
-Create a channel and synchronously preload it with candles from the given date.
-This is for warming up a trading strategy.
+Stream finished 1 minute candles for a market from an exchange.
+(A finished candle is one that will no longer change, because the
+minute it represents is in the past.)  This function returns
+a tuple containing a channel that the candles will be published to.
+The tuple also contains the task that preloads the channel with
+past data and the observer that watches for candles to finish
+before publishing.
+
+# Example
+```julia-repl
+julia> bitstamp = Bitstamp();
+
+julia> ses = start(bitstamp, "BTCUSD");
+
+julia> (ch, task, observer) = stream(ses, today() - Day(2));
+```
 """
-function preload(session, from::Date=(today(tz"UTC") - Day(1)))
+function stream(session, from::Date=(today(tz"UTC") - Day(1)))
     CandleType = candle_type(session.exchange)
     ch = Channel{CandleType}(60)
     live = Observable{Observable}()
