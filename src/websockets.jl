@@ -70,7 +70,7 @@ completes a candle.
 """
 function command_process(td::Visor.Process, s::Session)
     for msg in td.inbox
-        @info :command msg
+        @debug :command msg
         if isshutdown(msg)
             break
         elseif isa(msg, AbstractCandle)
