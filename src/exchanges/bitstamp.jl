@@ -116,12 +116,17 @@ end
 
 """$(TYPEDSIGNATURES)
 
-Return a vector of JSON commands to send to an exchange's WebSocket API.
+Return a vector of JSON commands to send to an exchange's WebSocket API
+to subscribe to market data.
 """
 function ws_subscribe_commands(bitstamp::Bitstamp, market::AbstractString)
+    clean_market = @chain market begin
+        lowercase
+        replace(_, "/" => "")
+    end
     map(
         JSON3.write,
-        [Dict(:event => "bts:subscribe", :data => Dict(:channel => "live_trades_$(lowercase(market))"))]
+        [Dict(:event => "bts:subscribe", :data => Dict(:channel => "live_trades_$(clean_market)"))]
     )
 end
 
