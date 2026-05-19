@@ -1,6 +1,6 @@
 name = "CryptoMarketData"
 uuid = "57973c84-8724-49d2-9af5-7f2266b21095"
-version = "1.1.2"
+version = "2.0.0"
 authors = ["contributors"]
 
 [deps]
