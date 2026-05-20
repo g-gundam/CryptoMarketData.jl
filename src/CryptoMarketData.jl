@@ -366,6 +366,9 @@ function load(exchange::AbstractExchange, market; datadir="./data", span=missing
             else
                 cfs = missing
             end
+            if a > b
+                error("In `span`, the second date is earlier than the first date.")
+            end
         end
     end
     res = missing
