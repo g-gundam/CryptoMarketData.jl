@@ -1,7 +1,9 @@
 PANCAKESWAP_API = "https://perp.pancakeswap.finance"
+PANCAKESWAP_WS_API = "wss://perp-fstream.pancakeswap.finance/plain/stream?streams=!markPriceTicker@arr"
 
 @kwdef struct PancakeSwap <: AbstractExchange
     base_url::AbstractString = PANCAKESWAP_API
+    ws_url::AbstractString = PANCAKESWAP_WS_API
     http_options::AbstractDict = Dict{Symbol,AbstractString}()
 end
 
@@ -131,13 +133,8 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
     end
 end
 
-function subscribe(pancakeswap::PancakeSwap)
-    uri = URI("wss://perp-fstream.pancakeswap.finance/plain/stream?streams=!markPriceTicker@arr")
-    session = subscribe(uri)
-    return session
-end
-
-function subscribe(pancakeswap::PancakeSwap, market)
+function ws_uri(pancakeswap::Pancakeswap)
+    URI(pancakeswap.ws_url)
 end
 
 export PancakeSwap
