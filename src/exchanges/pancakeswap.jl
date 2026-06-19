@@ -1,5 +1,6 @@
 PANCAKESWAP_API = "https://perp.pancakeswap.finance"
 PANCAKESWAP_WS_API = "wss://perp-fstream.pancakeswap.finance/plain/stream?streams=!markPriceTicker@arr"
+# XXX: May need to use this instead: wss://fstream.asterdex.com/ws
 
 @kwdef struct PancakeSwap <: AbstractExchange
     base_url::AbstractString = PANCAKESWAP_API
