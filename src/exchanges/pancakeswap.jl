@@ -134,8 +134,15 @@ function get_candles(pancakeswap::PancakeSwap, market; start, stop, tf=Minute(1)
     end
 end
 
-function ws_uri(pancakeswap::Pancakeswap)
+function ws_uri(pancakeswap::PancakeSwap)
     URI(pancakeswap.ws_url)
+end
+
+function ws_subscribe_commands(pancakeswap::PancakeSwap)
+    []
+end
+
+function ws_handle_message(pancakeswap::PancakeSwap, s::Session, msg::AbstractString)
 end
 
 export PancakeSwap
