@@ -1,5 +1,7 @@
 PANCAKESWAP_API = "https://perp.pancakeswap.finance"
+# This is for legacy mode which is on https://pancakeswap.finance/perp/v2/BTCUSD?theme=dark&chain=bsc
 PANCAKESWAP_WS_API = "wss://perp-fstream.pancakeswap.finance/plain/stream?streams=!markPriceTicker@arr"
+# This is for the current (2026) perps on https://pancakeswap.finance/perps/BTCUSDT?mode=pro
 # XXX: May need to use this instead: wss://fstream.asterdex.com/ws
 
 @kwdef struct PancakeSwap <: AbstractExchange
