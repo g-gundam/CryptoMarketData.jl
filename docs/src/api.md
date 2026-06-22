@@ -128,6 +128,7 @@ command_process
 
 ### Exchange Specific Implementations
 
+- candle_type
 - [`csv_headers`](@ref)
 - csv_select
 - ts2datetime_fn
