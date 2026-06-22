@@ -60,6 +60,41 @@ function get_markets(asterdex::AsterdexFutures)
 end
 
 function get_candles(asterdex::AsterdexFutures, market; start, stop, tf=Minute(1), limit::Integer=10)
+    interval = if tf == Day(1)
+        "1d"
+    elseif tf == Minute(1)
+        "1m"
+    else
+        "1m"
+    end
+    q = OrderedDict(
+        "symbol" => market,
+        "interval" => interval,
+        "startTime" => nanodate2unixmillis(NanoDate(start)),
+        "stopTime" => nanodate2unixmillis(NanoDate(stop)),
+        "limit" => limit
+    )
+    kline_url = asterdex.base_url * "/fapi/v3/klines"
+    uri = URI(kline_url; query=q)
+    headers = ["Content-Type" => "application/json"]
+    res = HTTP.get(uri, headers; asterdex.http_options...)
+    json = JSON3.read(res.body)
+    return map(reverse(json)) do c
+        AsterdexFuturesCandle(
+            convert(UInt64, c[1]),
+            pf64(c[2]),
+            pf64(c[3]),
+            pf64(c[4]),
+            pf64(c[5]),
+            pf64(c[6]),
+            convert(UInt64, c[7]),
+            pf64(c[8]),
+            c[9],
+            pf64(c[10]),
+            pf64(c[11]),
+            pf64(c[12])
+        )
+    end
 end
 
 export AsterdexFutures
