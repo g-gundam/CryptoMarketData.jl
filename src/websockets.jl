@@ -202,13 +202,12 @@ end
 
 """$(TYPEDSIGNATURES)
 
-Stream finished 1 minute candles for a market from an exchange.
-A finished candle is one that will no longer change, because the
-minute it represents is in the past.  Candles from the past as
-specified by the `from` parameter are also published to the channel
-before switching to websockets.
+Return a tuple that contains a channel as its first element that 1 minute
+candles will be published to in realtime as they are finalized.  Candles
+from the past as specified by the `from` parameter are also published to the
+channel before switching to websockets.
 
-# Notes
+## Notes on other returned values
 - The returned channel is what will be interacted with the most.
 - The task is the async process that loads the initial candles into the channel and switches to publishing from websockets afterward.
 - The observer is what waits for a candle to finish before publishing.
