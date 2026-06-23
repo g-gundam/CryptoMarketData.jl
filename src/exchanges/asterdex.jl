@@ -97,5 +97,28 @@ function get_candles(asterdex::AsterdexFutures, market; start, stop, tf=Minute(1
     end
 end
 
+# Asterdex requires a different technique.
+# This should be faster.
+function earliest_candle(asterdex::AsterdexFutures, market; endday=today(tz"UTC"))
+    url = asterdex.base_url * "/fapi/v3/exchangeInfo"
+    uri = URI(url)
+    res = HTTP.get(uri; asterdex.http_options...)
+    json = JSON3.read(res.body)
+    m_i = findfirst(s -> s[:symbol] == market, json[:symbols])
+    if isnothing(m_i)
+        return nothing
+    end
+    market_info = json[:symbols][m_i]
+    onboard_date = unixmillis2nanodate(market_info[:onboardDate])
+    starting_month = floor(onboard_date, Month)
+    stop = starting_month + Day(60)
+    cs = get_candles(asterdex, market; start=starting_month, stop, limit=1)
+    if length(cs) > 0
+        cs[1]
+    else
+        nothing
+    end
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
