@@ -1,6 +1,12 @@
 ## Generalized Documentation
 #    for methods with exchange-specific implementations:
 
+"""    candle_type(exchange::AbstractExchange) -> Type{<: AbstractCandle}
+
+Return the type of the candle used by this exchange driver.
+"""
+candle_type(exchange::AbstractExchange)
+
 """    csv_headers(exchange::AbstractExchange) -> Vector{Symbol}
 
 Return headings for each column of candle data.
