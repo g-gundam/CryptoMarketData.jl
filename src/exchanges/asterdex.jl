@@ -120,5 +120,9 @@ function earliest_candle(asterdex::AsterdexFutures, market; endday=today(tz"UTC"
     end
 end
 
+function ws_uri(asterdex::AsterdexFutures)
+    URI(asterdex.ws_url)
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
