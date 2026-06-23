@@ -128,7 +128,7 @@ command_process
 
 ### Exchange Specific Implementations
 
-- candle_type
+- [`candle_type`](@ref)
 - [`csv_headers`](@ref)
 - csv_select
 - ts2datetime_fn
@@ -141,6 +141,10 @@ command_process
 - [`ws_subscribe_commands`](@ref)
 - [`ws_uri`](@ref)
 - [`Base.merge`](@ref)
+
+```@docs
+candle_type
+```
 
 ```@docs
 csv_headers
