@@ -253,8 +253,7 @@ function save_day!(exchange::AbstractExchange, market, candles; datadir="./data"
     CSV.write(outfile, candles |> DataFrame)
 end
 
-"""
-    earliest_candle(exchange, market)
+"""$(TYPEDSIGNATURES)
 
 Return the earliest candle for the given market in the 1m timeframe.
 """
