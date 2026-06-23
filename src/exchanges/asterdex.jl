@@ -68,11 +68,11 @@ function get_candles(asterdex::AsterdexFutures, market; start, stop, tf=Minute(1
         "1m"
     end
     q = OrderedDict(
-        "symbol" => market,
-        "interval" => interval,
+        "symbol"    => market,
+        "interval"  => interval,
         "startTime" => nanodate2unixmillis(NanoDate(start)),
-        "stopTime" => nanodate2unixmillis(NanoDate(stop)),
-        "limit" => limit
+        "stopTime"  => nanodate2unixmillis(NanoDate(stop)),
+        "limit"     => limit
     )
     kline_url = asterdex.base_url * "/fapi/v3/klines"
     uri = URI(kline_url; query=q)
