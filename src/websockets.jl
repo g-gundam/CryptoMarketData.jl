@@ -252,3 +252,24 @@ function stop(session::Session)
 
     #shutdown(session.supervisor_ws)
 end
+
+#=
+# REPL Snippets
+using CryptoMarketData, Dates
+
+function consume(ch::Channel)
+    while true
+        candle = take!(ch)
+        print(now(), " ", candle, "\n")
+    end
+end
+
+bitstamp = Bitstamp()
+ses = start(bitstamp)
+(ch, task, observer0) = stream(ses, today() - Day(2))
+
+t = @task consume(ch)
+schedule(t)
+
+schedule(t, InterruptException(); error=true)
+=#
