@@ -1,5 +1,15 @@
 # Exchanges
 
+## Asterdex
+
+Docs: [futures-v3/market-data/kline](https://asterdex.github.io/aster-api-website/futures-v3/market-data/#klinecandlestick-data)
+
+Asterdex is a DEX that supports futures and spot trading.  Initially, only
+the futures API is supported via `AsterdexFutures`.  PancakeSwap uses the
+Asterdex trading engine as their main perpetuals trading engine as of early 2026.
+The old API is still supported, but it's labeled legacy, and I wouldn't be
+suprised if it gets phased out.
+
 ## Binance
 
 Status:  Work in Progress
