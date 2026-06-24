@@ -5,7 +5,7 @@
 The defaults are usually fine.
 
 ```julia-repl
-julia> using CryptoMarketData
+julia> using CryptoMarketData, Dates
 
 julia> bitget = Bitget()
 Bitget("https://api.bitget.com", "https://www.bitget.com", Dict{Any, Any}(), "dmcbl")
@@ -72,23 +72,34 @@ julia> markets = get_markets(bitstamp); markets[1:5]
 This is the most basic thing you can do with this library.
 
 ```julia-repl
+julia> ENV["JULIA_DEBUG"] = "CryptoMarketData" # optional, but it helps you see that it's moving
+"CryptoMarketData"
+
 julia> save!(bitstamp, "BTC/USD"; endday=Date("2011-08-25"))
-┌ Info: 2011-08-18
-└   length(cs) = 683
-┌ Info: 2011-08-19
-└   length(cs) = 1440
-┌ Info: 2011-08-20
-└   length(cs) = 1440
-┌ Info: 2011-08-21
-└   length(cs) = 1440
-┌ Info: 2011-08-22
-└   length(cs) = 1440
-┌ Info: 2011-08-23
-└   length(cs) = 1440
-┌ Info: 2011-08-24
-└   length(cs) = 1440
-┌ Info: 2011-08-25
-└   length(cs) = 1440
+┌ Debug: 2011-08-18
+│   length(cs) = 683
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-19
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-20
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-21
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-22
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-23
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-24
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
+┌ Debug: 2011-08-25
+│   length(cs) = 1440
+└ @ CryptoMarketData ~/src/github.com/g-gundam/CryptoMarketData.jl/src/CryptoMarketData.jl:232
 ```
 
 ### Find Out When Candle Data for a Market Begins
@@ -123,3 +134,43 @@ julia> btcusd4h = load(bitstamp, "BTC/USD";
   tf=Hour(4), span=Date("2024-01-01"):Date("2024-01-15"))
 ```
 
+## Stream Candles
+
+```julia-repl
+julia> bitstamp = Bitstamp();
+
+julia> ses = start(bitstamp, "BTCUSD");
+
+julia> (ch, task, observer) = stream(ses, today() - Day(2));
+```
+
+Once you have a channel, you can `take!` from it to get 1 minute candles.  First, create a function that will consume from a channel.
+
+```julia
+function consume(ch::Channel)
+    while true
+        c = take!(ch)
+        print(now(), " ", candle, "\n")
+    end
+end
+```
+
+Then schedule it to run in the background.
+
+```julia-repl
+julia> t = @task consume(ch)
+
+julia> schedule(t)
+```
+
+After every minute, a new candle should appear.  When you no longer want to consume candles, you can kill the task.
+
+```julia-repl
+julia> schedule(t, InterruptException(); error=true)
+```
+
+You could also disconnect from the websocket.
+
+```julia-repl
+julia> stop(ses)
+```
