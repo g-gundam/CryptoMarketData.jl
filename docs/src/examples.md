@@ -149,7 +149,7 @@ Once you have a channel, you can `take!` from it to get 1 minute candles.  First
 ```julia
 function consume(ch::Channel)
     while true
-        c = take!(ch)
+        candle = take!(ch)
         print(now(), " ", candle, "\n")
     end
 end
