@@ -27,6 +27,13 @@ julia> columns = csv_headers(bitstamp)
 """
 csv_headers(exchange)
 
+"""    csv_select(exchange) -> AbstractRange
+
+Return a range that can be passed to CSV.read as a keyword parameter to select:
+timestamp, open, high, low, close, and volume.
+"""
+csv_select(exchange)
+
 """    get_markets(exchange) -> Vector{String}
 
 Fetch the available markets for the given exchange.
