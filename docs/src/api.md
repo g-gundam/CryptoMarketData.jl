@@ -130,7 +130,7 @@ command_process
 
 - [`candle_type`](@ref)
 - [`csv_headers`](@ref)
-- csv_select
+- [`csv_select`](@ref)
 - ts2datetime_fn
 - short_name
 - candles_max
@@ -148,6 +148,10 @@ candle_type
 
 ```@docs
 csv_headers
+```
+
+```@docs
+csv_select
 ```
 
 ```@docs
