@@ -131,7 +131,7 @@ command_process
 - [`candle_type`](@ref)
 - [`csv_headers`](@ref)
 - [`csv_select`](@ref)
-- ts2datetime_fn
+- [`ts2datetime_fn`](@ref)
 - short_name
 - candles_max
 - [`get_markets`](@ref)
@@ -152,6 +152,10 @@ csv_headers
 
 ```@docs
 csv_select
+```
+
+```@docs
+ts2datetime_fn
 ```
 
 ```@docs
