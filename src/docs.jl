@@ -34,6 +34,12 @@ timestamp, open, high, low, close, and volume.
 """
 csv_select(exchange)
 
+"""    ts2datetime_fn(exchange) -> Function
+
+Return a function that can take a timestamp from the exchange's CandleType and return it as a DateTime.
+"""
+ts2datetime_fn(exchange)
+
 """    get_markets(exchange) -> Vector{String}
 
 Fetch the available markets for the given exchange.
