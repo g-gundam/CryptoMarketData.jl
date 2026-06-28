@@ -132,7 +132,7 @@ command_process
 - [`csv_headers`](@ref)
 - [`csv_select`](@ref)
 - [`ts2datetime_fn`](@ref)
-- short_name
+- [`short_name`](@ref)
 - candles_max
 - [`get_markets`](@ref)
 - get_candles
@@ -156,6 +156,10 @@ csv_select
 
 ```@docs
 ts2datetime_fn
+```
+
+```@docs
+short_name
 ```
 
 ```@docs

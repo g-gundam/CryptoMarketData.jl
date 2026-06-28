@@ -40,6 +40,12 @@ Return a function that can take a timestamp from the exchange's CandleType and r
 """
 ts2datetime_fn(exchange)
 
+"""    short_name(exchange) -> String
+
+Return a string with no spaces that's suitable for use as a directory name in a file system.
+"""
+short_name(exchange)
+
 """    get_markets(exchange) -> Vector{String}
 
 Fetch the available markets for the given exchange.
