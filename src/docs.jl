@@ -46,6 +46,13 @@ Return a string with no spaces that's suitable for use as a directory name in a 
 """
 short_name(exchange)
 
+
+"""    candles_max(exchange) -> Integer
+
+Return the maximum number of candles an exchange's API can return in one request.
+"""
+candles_max(exchange)
+
 """    get_markets(exchange) -> Vector{String}
 
 Fetch the available markets for the given exchange.
