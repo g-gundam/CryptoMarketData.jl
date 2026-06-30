@@ -135,7 +135,7 @@ command_process
 - [`short_name`](@ref)
 - [`candles_max`](@ref)
 - [`get_markets`](@ref)
-- get_candles
+- [`get_candles`](@ref)
 - [`update!`](@ref)
 - [`ws_handle_message`](@ref)
 - [`ws_subscribe_commands`](@ref)
@@ -168,6 +168,10 @@ candles_max
 
 ```@docs
 get_markets
+```
+
+```@docs
+get_candles
 ```
 
 ```@docs

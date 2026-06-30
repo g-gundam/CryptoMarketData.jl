@@ -46,6 +46,18 @@ Return a string with no spaces that's suitable for use as a directory name in a 
 """
 short_name(exchange)
 
+"""    get_candles(exchange::AbstractExchange, market::AbstractString; start::Date, stop::Date, tf::AbstractPeriod, limit::Integer) -> Vector{AbstractCandle}
+
+Make a request to an exchange's API for candle (kline) data, and return
+a vector of candles of `candle_type(exchange)`.
+
+# Keyword Arguments
+* start - a Date to start from
+* stop - a Date that is greater than or equal to start
+* tf - a Period for the candle size.  In this library, only `Minute(1)` and `Day(1)` need to be suppported.
+* limit - the number of candles to request from the API
+"""
+get_candles(exchange, market; start, stop, tf, limit)
 
 """    candles_max(exchange) -> Integer
 
