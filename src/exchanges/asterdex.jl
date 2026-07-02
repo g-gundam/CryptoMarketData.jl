@@ -124,5 +124,12 @@ function ws_uri(asterdex::AsterdexFutures)
     URI(asterdex.ws_url)
 end
 
+function ws_subscribe_commands(asterdex::AsterdexFutures, market::AbstractString)
+    lc_market = lowercase(market)
+    [
+        JSON3.write(Dict(:method => "SUBSCRIBE", :params => ["$(lc_market)@kline_1m"]))
+    ]
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
