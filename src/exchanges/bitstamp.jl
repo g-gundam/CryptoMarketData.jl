@@ -105,20 +105,10 @@ function get_candles(bitstamp::Bitstamp, market; start, stop, tf=Minute(1), limi
     end
 end
 
-# TODO: I may want to document this once to cover all specializations.
-"""$(TYPEDSIGNATURES)
-
-Return the websocket URI for the given exchange.
-"""
 function ws_uri(bitstamp::Bitstamp)
     URI(bitstamp.ws_url)
 end
 
-"""$(TYPEDSIGNATURES)
-
-Return a vector of JSON commands to send to an exchange's WebSocket API
-to subscribe to market data.
-"""
 function ws_subscribe_commands(bitstamp::Bitstamp, market::AbstractString)
     clean_market = @chain market begin
         lowercase
@@ -130,13 +120,6 @@ function ws_subscribe_commands(bitstamp::Bitstamp, market::AbstractString)
     )
 end
 
-"""$(TYPEDSIGNATURES)
-
-While inside `accumulator_process`, handle a websocket message from the exchange.
-The main job of this function is to send candles to commander_process.
-Secondary jobs may include acknowledging successful subscriptions
-or handling reconnect requests.
-"""
 function ws_handle_message(bitstamp::Bitstamp, s::Session, msg::AbstractString)
     data = JSON3.read(msg)
     commander = Visor.from_name(s.supervisor, "command_process")

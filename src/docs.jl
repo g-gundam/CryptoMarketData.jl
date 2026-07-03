@@ -65,6 +65,28 @@ Return the maximum number of candles an exchange's API can return in one request
 """
 candles_max(exchange)
 
+"""    ws_uri(exchange::AbstractExchange) -> URI
+
+Return the websocket URI for the given exchange.
+"""
+ws_uri(exchange)
+
+"""    ws_subscribe_commands(exchange::AbstractExchange, market::AbstractString) -> Vector{String}
+
+Return a vector of JSON commands to send to an exchange's WebSocket API
+to subscribe to market data.
+"""
+ws_subscribe_commands(exchange, market)
+
+"""    ws_handle_message(exchange::AbstractExchange, s::Session, msg)
+
+While inside `accumulator_process`, handle a websocket message from the exchange.
+The main job of this function is to send candles to commander_process.
+Secondary jobs may include acknowledging successful subscriptions
+or handling reconnect requests.
+"""
+ws_handle_message(exchange, session, msg)
+
 """    get_markets(exchange) -> Vector{String}
 
 Fetch the available markets for the given exchange.
