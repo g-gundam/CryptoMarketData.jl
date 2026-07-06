@@ -26,8 +26,12 @@ abstract type AbstractCandle end
 # I don't feel ready to do a major refactor yet.
 abstract type AbstractStorage end
 
-# This is used to contain WebSocket sessions and interact with them.
-@kwdef mutable struct Session
+abstract type AbstractSession end
+
+# This is used to contain stateful data related to a websocket connection.
+# A lot of exchanges can just use this generic session.
+# Some exchanges may have special needs that require an exchange-specific subtype of AbstractSession.
+@kwdef mutable struct Session <: AbstractSession
     exchange::AbstractExchange
     market::AbstractString
     candles::Vector{<: AbstractCandle}
