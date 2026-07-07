@@ -147,7 +147,9 @@ julia> ses = start(bitstamp, "BTCUSD");
 julia> (ch, task, observer) = stream(ses, today() - Day(2));
 ```
 
-Once you have a channel, you can `take!` from it to get 1 minute candles.  First, create a function that will consume from a channel.
+Once you have a channel, you can `take!` from it to get 1 minute candles.
+If you don't already have something that can consume candles from a channel,
+try writing a test function like the following.
 
 ```julia
 function consume(ch::Channel)
