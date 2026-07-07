@@ -136,6 +136,9 @@ julia> btcusd4h = load(bitstamp, "BTC/USD";
 
 ## Stream Candles
 
+1. Start a websocket session using the `start` method.
+2. Request a channel of candles using the `stream` method.
+
 ```julia-repl
 julia> bitstamp = Bitstamp();
 
