@@ -131,5 +131,11 @@ function ws_subscribe_commands(asterdex::AsterdexFutures, market::AbstractString
     ]
 end
 
+function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractString)
+    data = JSON3.read(msg)
+    commander = Visor.from_name(s.supervisor, "command_process")
+    @info msg
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
