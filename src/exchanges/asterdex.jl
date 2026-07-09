@@ -137,5 +137,14 @@ function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractS
     @info msg
 end
 
+# used by CryptoMarketData.update!
+
+function Base.merge(a::AsterdexFuturesCandle, b::AsterdexFuturesCandle)
+    @assert a.timestamp == b.timestamp # hopefully, whoever is calling update can guarantee this, so I can get rid of this.
+    high = max(a.h, b.h)
+    low  = min(a.l, b.l)
+    return AsterdexFuturesCandle(a.ts, a.o, high, low, b.c, b.v, b.cts, b.qv, b.trades, b.tbvv, b.tbqv, b.ignore)
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
