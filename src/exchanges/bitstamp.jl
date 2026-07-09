@@ -151,7 +151,7 @@ function Base.merge(a::BitstampCandle, b::BitstampCandle)
     return BitstampCandle(a.timestamp, a.open, high, low, b.close, b.volume)
 end
 
-## The following Base.merge methods are used by code that consumes data from websokets.
+## The following Base.merge methods are used by code that consumes data from websockets.
 
 # a is the last candle
 # b is the new data
