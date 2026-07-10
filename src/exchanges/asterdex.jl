@@ -146,10 +146,61 @@ function Base.merge(a::AsterdexFuturesCandle, b::AsterdexFuturesCandle)
     return AsterdexFuturesCandle(a.ts, a.o, high, low, b.c, b.v, b.cts, b.qv, b.trades, b.tbvv, b.tbqv, b.ignore)
 end
 
+# initial candle
 function Base.merge(a::Type{AsterdexFuturesCandle}, b::AbstractDict; tf=Minute(1))
+    k = b[:k]
+    return AsterdexFuturesCandle(
+        ts=convert(UInt64, k[:t]),
+        o=parse(Float64, k[:o]),
+        h=parse(Float64, k[:h]),
+        l=parse(Float64, k[:l]),
+        c=parse(Float64, k[:c]),
+        v=parse(Float64, k[:v]),
+        cts=convert(UInt64, k[:T]),
+        qv=parse(Float64, k[:q]),
+        trades=k[:n],
+        tbvv=parse(Float64, k[:V]),
+        tbqv=parse(Float64, k[:Q]),
+        ignore=parse(Float64, k[:B])
+    )
 end
 
+# subsequent candles
 function Base.merge(a::AsterdexFuturesCandle, b::AbstractDict; tf=Minute(1))
+    k = b[:k]
+    b_ts = convert(UInt64, k[:t])
+    if a.ts == b_ts
+        # update candle
+        return AsterdexFuturesCandle(
+            ts=a.ts,
+            o=a.o,
+            h=max(a.h, parse(Float64, k[:h])),
+            l=min(a.l, parse(Float64, k[:l])),
+            c=parse(Float64, k[:c]),
+            cts=convert(UInt64, k[:T]),
+            qv=parse(Float64, k[:q]),
+            trades=k[:n],
+            tbvv=parse(Float64, k[:V]),
+            tbqv=parse(Float64, k[:Q]),
+            ignore=parse(Float64, k[:B])
+        )
+    else
+        # new candle
+        return AsterdexFuturesCandle(
+            ts=b_ts,
+            o=parse(Float64, k[:o]),
+            h=parse(Float64, k[:h]),
+            l=parse(Float64, k[:l]),
+            c=parse(Float64, k[:c]),
+            v=parse(Float64, k[:v]),
+            cts=convert(UInt64, k[:T]),
+            qv=parse(Float64, k[:q]),
+            trades=k[:n],
+            tbvv=parse(Float64, k[:V]),
+            tbqv=parse(Float64, k[:Q]),
+            ignore=parse(Float64, k[:B])
+        )
+    end
 end
 
 export AsterdexFutures
