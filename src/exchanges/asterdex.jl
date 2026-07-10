@@ -146,5 +146,11 @@ function Base.merge(a::AsterdexFuturesCandle, b::AsterdexFuturesCandle)
     return AsterdexFuturesCandle(a.ts, a.o, high, low, b.c, b.v, b.cts, b.qv, b.trades, b.tbvv, b.tbqv, b.ignore)
 end
 
+function Base.merge(a::Type{AsterdexFuturesCandle}, b::AbstractDict; tf=Minute(1))
+end
+
+function Base.merge(a::AsterdexFuturesCandle, b::AbstractDict; tf=Minute(1))
+end
+
 export AsterdexFutures
 export AsterdexFuturesCandle
