@@ -25,7 +25,7 @@ A library for saving and loading OHLCV candle data from cryptocurrency exchanges
 
 | Name            | Candle Archival  | WebSockets  |
 |-----------------|------------------|-------------|
-| AsterdexFutures | DONE             | In Progress |
+| AsterdexFutures | Done             | Done        |
 | Binance         | Work in Progress | Not Started |
 | Bitget          | Slightly Broken  | Not Started |
 | Bitmex          | Done             | Not Started |
