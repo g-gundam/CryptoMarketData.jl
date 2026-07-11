@@ -138,7 +138,7 @@ end
 function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractString)
     data = JSON3.read(msg)
     commander = Visor.from_name(s.supervisor, "command_process")
-    @info msg
+    @debug msg
     if haskey(data, :e)
         if data[:e] == "kline"
             new_candle = merge(s.last_candle, data)
