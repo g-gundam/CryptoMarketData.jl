@@ -8,6 +8,7 @@ ASTERDEX_FUTURES_V3_WS_API = "wss://fstream.asterdex.com/ws/"
 end
 
 # https://asterdex.github.io/aster-api-website/futures-v3/market-data/#klinecandlestick-data
+# https://asterdex.github.io/aster-api-website/futures-v3/websocket-market-streams/#klinecandlestick-streams
 @kwdef struct AsterdexFuturesCandle <: AbstractCandle
     ts::UInt64                  # Open time
     o::Float64                  # Open
@@ -135,13 +136,26 @@ function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractS
     data = JSON3.read(msg)
     commander = Visor.from_name(s.supervisor, "command_process")
     @info msg
-    # TODO: implement
+    if haskey(data, :e)
+        if data[:e] == "kline"
+            new_candle = merge(s.last_candle, data)
+            cast(commander, new_candle)
+            s.last_candle = new_candle
+        elseif data[:e] == "ping"
+            # TODO: send pong.
+            @info :ax note="ping received; need to send pong"
+        else
+            @warn :ax note="unknown message type" data["event"]
+        end
+    else
+        @warn :ax note="data has no 'event' key." data
+    end
 end
 
 # used by CryptoMarketData.update!
 
 function Base.merge(a::AsterdexFuturesCandle, b::AsterdexFuturesCandle)
-    @assert a.timestamp == b.timestamp # hopefully, whoever is calling update can guarantee this, so I can get rid of this.
+    @assert a.ts == b.ts # hopefully, whoever is calling update can guarantee this, so I can get rid of this.
     high = max(a.h, b.h)
     low  = min(a.l, b.l)
     return AsterdexFuturesCandle(a.ts, a.o, high, low, b.c, b.v, b.cts, b.qv, b.trades, b.tbvv, b.tbqv, b.ignore)
@@ -178,6 +192,7 @@ function Base.merge(a::AsterdexFuturesCandle, b::AbstractDict; tf=Minute(1))
             h=max(a.h, parse(Float64, k[:h])),
             l=min(a.l, parse(Float64, k[:l])),
             c=parse(Float64, k[:c]),
+            v=parse(Float64, k[:v]),
             cts=convert(UInt64, k[:T]),
             qv=parse(Float64, k[:q]),
             trades=k[:n],
