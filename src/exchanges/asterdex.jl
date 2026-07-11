@@ -1,3 +1,6 @@
+using HTTP
+using HTTP.WebSockets
+
 ASTERDEX_FUTURES_V3_API = "https://fapi.asterdex.com"
 ASTERDEX_FUTURES_V3_WS_API = "wss://fstream.asterdex.com/ws/"
 
@@ -144,6 +147,8 @@ function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractS
         elseif data[:e] == "ping"
             # TODO: send pong.
             @info :ax note="ping received; need to send pong"
+            pong = """{ "method": "PONG" }"""
+            WebSockets.send(ses.ws, pong)
         else
             @warn :ax note="unknown message type" data["event"]
         end
@@ -221,3 +226,12 @@ end
 
 export AsterdexFutures
 export AsterdexFuturesCandle
+
+#=
+# REPL Snippets
+
+ping = """{ "method": "PING" }"""
+pong = """{ "method": "PONG" }"""
+WebSockets.send(ses.ws, ping)
+WebSockets.send(ses.ws, pong)
+=#
