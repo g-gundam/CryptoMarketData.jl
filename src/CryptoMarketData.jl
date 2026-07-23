@@ -51,7 +51,7 @@ include("Select.jl")
 include("helpers.jl")
 
 # exported exchange-specific structures and methods
-include("exchanges/asterdex.jl")           # TODO
+include("exchanges/asterdex.jl")           # DONE
 include("exchanges/binance.jl")            # DONE
 include("exchanges/bitget.jl")             # DONE
 include("exchanges/bitmex.jl")             # DONE
