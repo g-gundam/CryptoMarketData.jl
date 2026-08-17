@@ -83,7 +83,7 @@ function get_candles(asterdex::AsterdexFutures, market; start, stop, tf=Minute(1
     headers = ["Content-Type" => "application/json"]
     res = HTTP.get(uri, headers; asterdex.http_options...)
     json = JSON3.read(res.body)
-    return map(reverse(json)) do c
+    return map(json) do c
         AsterdexFuturesCandle(
             convert(UInt64, c[1]),
             pf64(c[2]),
