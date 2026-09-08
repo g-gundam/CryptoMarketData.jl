@@ -17,7 +17,7 @@ function ws_process(td::Visor.Process, s::Session)
         return
     end
     try
-        WebSockets.open(uri) do ws
+        WebSockets.open("$uri") do ws
             @info :ws note="connected to $uri"
             s.ws = ws
             cast(commander, (:subscribe,))
@@ -34,7 +34,7 @@ function ws_process(td::Visor.Process, s::Session)
             close(ws)
         end
     catch e
-        @info :ws note="Closing due to exception" typeof(e)
+        @error :ws note="Closing due to exception" typeof(e) e
     end
     @info :ws note="the end"
 end
@@ -265,7 +265,7 @@ function consume(ch::Channel)
 end
 
 bitstamp = Bitstamp()
-ses = start(bitstamp)
+ses = start(bitstamp, "BTCUSD")
 (ch, task, observer0) = stream(ses, today() - Day(2))
 
 t = @task consume(ch)
