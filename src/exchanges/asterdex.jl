@@ -154,6 +154,9 @@ function ws_handle_message(asterdex::AsterdexFutures, s::Session, msg::AbstractS
         end
     else
         @warn :ax note="data has no 'event' key." data
+        # This is not necessarily bad.
+        # Often, it is a legitimate ACK message for a command I sent.
+        # TODO: Be more deliberate about ACK handling.
     end
 end
 
